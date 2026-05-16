@@ -1,0 +1,20 @@
+{
+  "scenario_id": "scenario3",
+  "name": "Restaurant Chain Fuel Price Impact",
+  "business_type": "restaurant",
+  "location": "Multiple",
+  "inputs": {
+    "csv_sales_data": "location,sales,delivery_cost\nBranch A,50000,10000\nBranch B,60000,12000\nBranch C,45000,9000",
+    "news_article": "Fuel prices increased by 15% nationwide effective immediately.",
+    "social_posts": "Customer1: Delivery charges for my favorite pizza just went up.\nCustomer2: I might just pick it up myself if delivery is this expensive.",
+    "supplier_email": "Subject: Revised Logistics Pricing",
+    "json_feed_url": "https://api.fooddelivery.com/v1/market_delivery_fees"
+  },
+  "conflicting_data_points": [
+    {
+      "source_a": "News Article A: Competitor BurgerKing raised delivery fee by Rs 50.",
+      "source_b": "News Article B: Competitor BurgerKing offering free delivery to combat fuel price drop in orders.",
+      "metric": "Competitor Pricing Strategy"
+    }
+  ]
+}

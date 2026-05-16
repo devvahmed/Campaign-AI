@@ -1,0 +1,20 @@
+{
+  "scenario_id": "scenario2",
+  "name": "Karachi E-commerce Inventory Crisis",
+  "business_type": "ecommerce",
+  "location": "Karachi",
+  "inputs": {
+    "csv_sales_data": "day,sales\nMon,50\nTue,55\nWed,120\nThu,250\nFri,300",
+    "news_article": "Heatwave hits Karachi. High demand for portable ACs and fans expected.",
+    "social_posts": "Customer1: When will Product Y be back in stock?\nCustomer2: Need this ASAP before the weekend.",
+    "supplier_email": "Subject: Order confirmation. New stock will arrive next week.",
+    "json_feed_url": "https://api.inventory.com/v1/stock/product_y"
+  },
+  "conflicting_data_points": [
+    {
+      "source_a": "System Dashboard: 500 units left in stock.",
+      "source_b": "Warehouse Physical Check: Only 50 units left.",
+      "metric": "Stock Count"
+    }
+  ]
+}
