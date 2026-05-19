@@ -11,6 +11,9 @@
     },
     "android": {
       "package": "com.autocampaign.frontend"
-    }
+    },
+    "plugins": [
+      "expo-sharing"
+    ]
   }
 }

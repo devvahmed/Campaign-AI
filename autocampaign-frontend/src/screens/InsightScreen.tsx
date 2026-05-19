@@ -13,8 +13,8 @@ export const InsightScreen = () => {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Data Insights</Text>
-      <Text style={styles.subtitle}>Agent 1 Analysis Complete</Text>
+      <Text style={styles.title}>Business ka Haal</Text>
+      <Text style={styles.subtitle}>AI ne apka data parh lia hai</Text>
 
       {contradictions.length > 0 && (
         <TouchableOpacity style={styles.conflictBanner} onPress={() => navigation.navigate('Contradiction')} activeOpacity={0.8}>
@@ -29,7 +29,7 @@ export const InsightScreen = () => {
         </TouchableOpacity>
       )}
 
-      <Text style={styles.sectionLabel}>DETECTED ANOMALIES</Text>
+      <Text style={styles.sectionLabel}>MASLAY (ANOMALIES)</Text>
       {insights.map((insight, index) => (
         <AlertCard
           key={index}

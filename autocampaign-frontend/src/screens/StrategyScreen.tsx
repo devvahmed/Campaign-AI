@@ -4,28 +4,23 @@ import { useNavigation } from '@react-navigation/native';
 import { Colors } from '../theme/colors';
 import { useCampaignStore } from '../store/campaignStore';
 import { Ionicons } from '@expo/vector-icons';
-import { generateAssets } from '../api/api';
+
 
 export const StrategyScreen = () => {
   const navigation = useNavigation<any>();
-  const { strategy, setAssets, jobId } = useCampaignStore();
+  const { strategy, setAssets, jobId, businessLevel } = useCampaignStore();
   const [loading, setLoading] = useState(false);
 
-  const handleGenerateAssets = async () => {
-    try {
-      setLoading(true);
-      const res = await generateAssets(jobId, strategy);
-      setAssets(res);
-      navigation.navigate('Assets');
-    } catch (e) { console.error(e); } finally { setLoading(false); }
+  const handleGenerateAssets = () => {
+    navigation.navigate('Assets');
   };
 
   if (!strategy) return null;
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Campaign Strategy</Text>
-      <Text style={styles.subtitle}>Agent 2 Recommendation</Text>
+      <Text style={styles.title}>Trend aur Strategy</Text>
+      <Text style={styles.subtitle}>Apki Business Strategy</Text>
 
       {/* Root Cause */}
       <View style={styles.rootCauseBox}>
@@ -33,13 +28,13 @@ export const StrategyScreen = () => {
           <Ionicons name="search" size={16} color={Colors.warning} />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={styles.rootLabel}>Root Cause Identified</Text>
+          <Text style={styles.rootLabel}>Asal Masla</Text>
           <Text style={styles.rootText}>{strategy.root_cause}</Text>
         </View>
       </View>
 
       {/* ROI Predictions */}
-      <Text style={styles.sectionLabel}>PROJECTED ROI</Text>
+      <Text style={styles.sectionLabel}>KITNA FAIDA HOGA (ROI)</Text>
       <View style={styles.roiRow}>
         {[
           { label: 'Conservative', value: strategy.roi_prediction.low, color: Colors.textSecondary },
@@ -54,7 +49,7 @@ export const StrategyScreen = () => {
       </View>
 
       {/* Action Chain */}
-      <Text style={styles.sectionLabel}>ACTION CHAIN</Text>
+      <Text style={styles.sectionLabel}>KIA KRNA CHAHIYE</Text>
       {strategy.action_chain.map((action: any, index: number) => (
         <View key={index} style={[styles.actionCard, !action.is_feasible && styles.actionFaded]}>
           <View style={styles.actionTop}>
@@ -73,11 +68,9 @@ export const StrategyScreen = () => {
         </View>
       ))}
 
-      <TouchableOpacity style={[styles.generateBtn, loading && { opacity: 0.7 }]} onPress={handleGenerateAssets} disabled={loading} activeOpacity={0.85}>
-        {loading ? <ActivityIndicator color="#fff" /> : <>
-          <Ionicons name="color-palette" size={18} color="#fff" />
-          <Text style={styles.generateBtnText}>Generate Creative Assets</Text>
-        </>}
+      <TouchableOpacity style={styles.generateBtn} onPress={handleGenerateAssets} activeOpacity={0.85}>
+        <Ionicons name="color-palette" size={18} color="#fff" />
+        <Text style={styles.generateBtnText}>View Creative Assets</Text>
       </TouchableOpacity>
     </ScrollView>
   );

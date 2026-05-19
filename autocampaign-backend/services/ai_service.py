@@ -16,8 +16,8 @@ def get_gemini_response(prompt: str, response_mime_type: str = "application/json
 
     try:
         genai.configure(api_key=api_key)
-        # Use gemini-1.5-flash for speed and reliability in JSON mode
-        model = genai.GenerativeModel("gemini-1.5-flash")
+        # Use gemini-2.5-flash for speed and reliability in JSON mode
+        model = genai.GenerativeModel("gemini-2.5-flash")
         
         generation_config = {
             "temperature": 0.2,

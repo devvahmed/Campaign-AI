@@ -4,7 +4,7 @@
   "business_type": "ecommerce",
   "location": "Karachi",
   "inputs": {
-    "csv_sales_data": "day,sales\nMon,50\nTue,55\nWed,120\nThu,250\nFri,300",
+    "csv_sales_data": "Karachi E-commerce\nday,sales\nMon,50\nTue,55\nWed,120\nThu,250\nFri,300",
     "news_article": "Heatwave hits Karachi. High demand for portable ACs and fans expected.",
     "social_posts": "Customer1: When will Product Y be back in stock?\nCustomer2: Need this ASAP before the weekend.",
     "supplier_email": "Subject: Order confirmation. New stock will arrive next week.",

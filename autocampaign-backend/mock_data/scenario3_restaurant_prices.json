@@ -4,7 +4,7 @@
   "business_type": "restaurant",
   "location": "Multiple",
   "inputs": {
-    "csv_sales_data": "location,sales,delivery_cost\nBranch A,50000,10000\nBranch B,60000,12000\nBranch C,45000,9000",
+    "csv_sales_data": "Restaurant Chain\nlocation,sales,delivery_cost\nBranch A,50000,10000\nBranch B,60000,12000\nBranch C,45000,9000",
     "news_article": "Fuel prices increased by 15% nationwide effective immediately.",
     "social_posts": "Customer1: Delivery charges for my favorite pizza just went up.\nCustomer2: I might just pick it up myself if delivery is this expensive.",
     "supplier_email": "Subject: Revised Logistics Pricing",

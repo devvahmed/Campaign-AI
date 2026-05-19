@@ -4,10 +4,10 @@
   "business_type": "soap_brand",
   "location": "Lahore",
   "inputs": {
-    "csv_sales_data": "week,sales\nWeek 1,1000\nWeek 2,1050\nWeek 3,980\nWeek 4,1100\nWeek 5,1020\nWeek 6,734\nWeek 7,740\nWeek 8,720",
+    "csv_sales_data": "Lahore Soap Brand\nweek,sales\nWeek 1,1000\nWeek 2,1050\nWeek 3,980\nWeek 4,1100\nWeek 5,1020\nWeek 6,734\nWeek 7,740\nWeek 8,720",
     "news_article": "CleanCo, the leading soap brand, just launched a massive 20% Summer Sale in Lahore. Analysts expect this to impact competitors.",
-    "social_posts": "Customer1: Why is Product X so expensive compared to CleanCo?\nCustomer2: CleanCo is way cheaper now, switching over.\nCustomer3: Love Product X but the price is too high lately.",
-    "supplier_email": "Subject: Delivery Delay Notification\nDue to logistical issues, the delivery of your next raw material batch will be delayed by 5 days. Please adjust your production schedule.",
+    "social_posts": "Customer1: Why is Product X so expensive compared to CleanCo?\nCustomer2: CleanCo is way cheaper now, switching over.",
+    "supplier_email": "Subject: Delivery Delay Notification\nDue to logistical issues, the delivery of your next raw material batch will be delayed by 5 days.",
     "json_feed_url": "https://api.marketdata.com/v1/soap_prices?city=lahore"
   },
   "conflicting_data_points": [

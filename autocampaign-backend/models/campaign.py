@@ -2,32 +2,41 @@ from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 
 class InputData(BaseModel):
-    csv_json: str = Field(..., description="CSV or JSON dataset")
-    pdf_report: str = Field(..., description="PDF or Report text extract")
-    website_article: str = Field(..., description="Website or Competitor Article content")
-    table_dashboard: str = Field(..., description="Table or Dashboard data snapshot")
-    mock_feed: str = Field(..., description="Mock real-time JSON feed")
+    csv_sales_data: str = Field(..., description="📊 CSV Sales Numbers")
+    pdf_report: str = Field(..., description="📄 PDF Business Report")
+    news_text: str = Field(..., description="📰 News / Competitor Activity")
+    social_posts: str = Field(..., description="💬 Social Posts / Customer Feedback")
+    web_url: str = Field(..., description="🔗 Live Web Content URL")
 
 class AnalyzeRequest(BaseModel):
     job_id: str
     budget: float = 15000.0
     inputs: InputData
+    business_knowledge_level: str = "beginner"
+    business_name: Optional[str] = None
+    brand_color: Optional[str] = None
+
+class UserRegisterRequest(BaseModel):
+    email: str
+    password: str
+    business_name: str
+    website_url: str
+    apply_brand_theme: bool = True
+
+class UserLoginRequest(BaseModel):
+    email: str
+    password: str
 
 class Anomaly(BaseModel):
     metric: str
     description: str
-    severity: str # "high", "medium", "low"
+    severity: str
 
 class TemporalTrend(BaseModel):
     metric: str
-    trend: str # "accelerating up", "accelerating down", "stable"
+    trend: str
     description: str
     values: List[float]
-
-class Agent1IngestionOutput(BaseModel):
-    anomalies: List[Anomaly]
-    temporal_trends: List[TemporalTrend]
-    filtered_noise_points: int
 
 class CredibilityScore(BaseModel):
     source: str
@@ -41,10 +50,25 @@ class Contradiction(BaseModel):
     description: str
     resolution: str
 
-class Agent2ContradictionOutput(BaseModel):
+class CompetitorAnalysis(BaseModel):
+    brand: str
+    snippet: str
+    url: str
+    source: str
+
+class TrendIntegration(BaseModel):
+    topic: str
+    snippet: str
+    source: str
+    how_to_use: str
+
+class Agent1Output(BaseModel):
+    insights: List[Anomaly]
     contradictions: List[Contradiction]
     credibility_scores: List[CredibilityScore]
-    unified_truth_summary: str
+    temporal_trends: List[TemporalTrend]
+    competitor_analysis: List[CompetitorAnalysis]
+    trend_integration: TrendIntegration
 
 class ActionStep(BaseModel):
     name: str
@@ -58,46 +82,56 @@ class RoiPrediction(BaseModel):
     mid: float
     high: float
 
-class Constraints(BaseModel):
-    budget_limit: float
-    time_limit_days: int
-    resources_available: List[str]
-
-class Agent3StrategyOutput(BaseModel):
+class Agent2Output(BaseModel):
     root_cause: str
     action_chain: List[ActionStep]
     roi_prediction: RoiPrediction
-    constraints_applied: Constraints
-    rejected_actions: List[str]
+    constraints_checked: Dict[str, Any]
 
-class Agent4CreativeOutput(BaseModel):
-    ad_copy: str
-    competitor_comparison: str
-    trend_meme_used: str
+class AdCopy(BaseModel):
+    headline_urdu: str
+    headline_english: str
+    body_urdu: str
+    body_english: str
+    cta_urdu: str
+    cta_english: str
+    email_subject: str
+    email_body: str
+
+class Agent3Output(BaseModel):
+    ad_copy: AdCopy
     image_prompt: str
     image_url: str
-    is_fallback_image: bool
+    is_fallback: bool
+    video_url: Optional[str] = None
+    video_prompt: Optional[str] = None
 
-class Agent5ExecutionOutput(BaseModel):
+class ExecutionStep(BaseModel):
+    step: str
     status: str
-    sms_status: str
-    retries_attempted: int
-    whatsapp_fallback_status: str
-    final_execution_log: str
+    latency_ms: int
+    message: str
+
+class Agent4Output(BaseModel):
+    status: str
+    execution_steps: List[ExecutionStep]
+    final_message: str
 
 class TraceLog(BaseModel):
-    agent_name: str
-    decision_summary: str
-    timestamp: str
-    metadata: Dict[str, Any]
-
-class Agent6TraceOutput(BaseModel):
     job_id: str
-    logs: List[TraceLog]
-    antigravity_signature: str = "Antigravity Active 🚀"
+    agent: str
+    timestamp: str
+    workplan: str
+    tool_calls: List[str]
+    reasoning: str
+    decision: str
+    confidence: float
+    latency_ms: int
+    output_summary: str
 
 class StrategyResponse(BaseModel):
     job_id: str
-    agent1_data: Agent1IngestionOutput
-    agent2_contradiction: Agent2ContradictionOutput
-    agent3_strategy: Agent3StrategyOutput
+    agent1_data: Agent1Output
+    agent2_strategy: Agent2Output
+    agent3_creative: Agent3Output
+

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, TouchableOpacity, Dimensions } from 'react-native';
 import { Colors } from '../theme/colors';
+import { useCampaignStore } from '../store/campaignStore';
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,8 +32,17 @@ const TOUR_STEPS = [
     position: { top: height * 0.6, left: 20 },
   },
   {
-    title: "All Set! 🎉",
-    text: "You're ready to launch campaigns like a pro. Enjoy the app!",
+    title: "Personalize Experience 🚀",
+    text: "Before we finish, let's set up your profile.",
+    question: "Aap kitnay saal se business kar rahe hain?",
+    options: ["<1 year", "1-3 years", ">3 years"],
+    position: { top: height * 0.3, left: 20 },
+  },
+  {
+    title: "Language Style 🧠",
+    text: "How should I explain things to you?",
+    question: "Business knowledge level kya hai?",
+    options: ["Beginner (Bilkul aam zaban)", "Advanced (Professional terms)"],
     position: { top: height * 0.3, left: 20 },
   }
 ];
@@ -43,6 +53,8 @@ export const AppTour = () => {
   
   const positionAnim = useRef(new Animated.ValueXY({ x: 0, y: height })).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  const setBusinessLevel = useCampaignStore(state => state.setBusinessLevel);
 
   useEffect(() => {
     if (isVisible) {
@@ -81,7 +93,22 @@ export const AppTour = () => {
     setIsVisible(false);
   };
 
+  const handleOptionSelect = (option: string) => {
+    if (currentStep === TOUR_STEPS.length - 1) {
+      if (option.includes("Beginner")) {
+        setBusinessLevel("beginner");
+      } else {
+        setBusinessLevel("advanced");
+      }
+      setIsVisible(false);
+    } else {
+      handleNext();
+    }
+  };
+
   if (!isVisible) return null;
+
+  const step = TOUR_STEPS[currentStep];
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
@@ -98,20 +125,30 @@ export const AppTour = () => {
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={styles.title}>{TOUR_STEPS[currentStep].title}</Text>
-          <Text style={styles.text}>{TOUR_STEPS[currentStep].text}</Text>
+          <Text style={styles.title}>{step.title}</Text>
+          <Text style={styles.text}>{step.text}</Text>
           
-          <View style={styles.footer}>
-            <TouchableOpacity onPress={handleSkip}>
-              <Text style={styles.skipText}>Skip Tour</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-              <Text style={styles.nextButtonText}>
-                {currentStep === TOUR_STEPS.length - 1 ? "Finish" : "Next 🚀"}
-              </Text>
-            </TouchableOpacity>
-          </View>
+          {step.question ? <Text style={styles.questionText}>{step.question}</Text> : null}
+          
+          {step.options ? (
+            <View style={styles.optionsContainer}>
+              {step.options.map((opt, idx) => (
+                <TouchableOpacity key={idx} style={styles.optionButton} onPress={() => handleOptionSelect(opt)}>
+                  <Text style={styles.optionText}>{opt}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          ) : (
+            <View style={styles.footer}>
+              <TouchableOpacity onPress={handleSkip}>
+                <Text style={styles.skipText}>Skip Tour</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+                <Text style={styles.nextButtonText}>Next 🚀</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         </Animated.View>
 
       </Animated.View>
@@ -122,74 +159,108 @@ export const AppTour = () => {
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: 'rgba(0,0,0,0.65)', // Darker overlay for better box pop-out
   },
   tourBox: {
     position: 'absolute',
     width: width - 40,
-    backgroundColor: Colors.surface,
+    backgroundColor: '#1C1C1E', // iOS Dark elevated surface
     borderRadius: 20,
     padding: 24,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.3,
-    shadowRadius: 20,
-    elevation: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.45,
+    shadowRadius: 24,
+    elevation: 12,
+    borderWidth: 1.5,
+    borderColor: '#0A84FF', // High visibility iOS Blue glowing border
   },
   hostContainer: {
     position: 'absolute',
     top: -30,
-    left: -15,
-    backgroundColor: Colors.primary,
+    left: 20,
+    backgroundColor: '#0A84FF',
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: Colors.primary,
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.4,
-    shadowRadius: 10,
+    shadowColor: '#0A84FF',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 8,
     borderWidth: 2,
-    borderColor: Colors.surface,
+    borderColor: '#1C1C1E',
   },
   hostEmoji: {
     fontSize: 30,
   },
   title: {
-    color: Colors.textPrimary,
-    fontSize: 20,
+    color: '#FFFFFF', // True white for absolute visibility
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 8,
-    marginTop: 10,
+    marginTop: 12,
   },
   text: {
-    color: Colors.textSecondary,
-    fontSize: 16,
-    lineHeight: 24,
+    color: '#E5E5EA', // Off-white, extremely legible
+    fontSize: 15,
+    lineHeight: 22,
     marginBottom: 20,
+  },
+  questionText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 16,
+  },
+  optionsContainer: {
+    flexDirection: 'column',
+    gap: 10,
+    marginTop: 8,
+  },
+  optionButton: {
+    backgroundColor: '#2C2C2E', // Solid readable card surface
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.15)',
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  optionText: {
+    color: '#FFFFFF', // High contrast
+    fontWeight: '700',
+    fontSize: 15,
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginTop: 12,
+    paddingTop: 10,
   },
   skipText: {
-    color: Colors.textTertiary,
-    fontSize: 14,
-    fontWeight: '500',
+    color: '#FF453A', // Clear bright red for skip button
+    fontWeight: '700',
+    fontSize: 15,
+    padding: 8,
   },
   nextButton: {
-    backgroundColor: Colors.primary,
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    backgroundColor: '#0A84FF',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
     borderRadius: 12,
+    shadowColor: '#0A84FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
   },
   nextButtonText: {
-    color: '#000',
-    fontWeight: 'bold',
-    fontSize: 14,
+    color: '#FFFFFF',
+    fontWeight: '700',
+    fontSize: 15,
   }
 });

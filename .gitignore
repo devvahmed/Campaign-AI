@@ -1,0 +1,43 @@
+# Gitignore for InsightFlow AI (Root Scope)
+
+# Python caches & build artifacts
+**/__pycache__/
+**/*.py[cod]
+**/*$py.class
+.venv/
+venv/
+ENV/
+
+# Local sensitive configuration and credentials
+autocampaign-backend/.env
+autocampaign-backend/serviceAccount.json
+autocampaign-backend/users.json
+
+# Backend dynamic generated assets and logs
+autocampaign-backend/generated_images/
+autocampaign-backend/traces/
+
+# Frontend dependencies and bundler caches
+**/node_modules/
+autocampaign-frontend/.expo/
+autocampaign-frontend/dist/
+autocampaign-frontend/web-build/
+autocampaign-frontend/expo-env.d.ts
+
+# Misplaced compiler/lib shadows (managed by node_modules)
+autocampaign-frontend/bin/
+autocampaign-frontend/lib/
+
+# IDE settings and system files
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+Thumbs.db
+
+# Startup script (optional to keep untracked)
+START_APP.bat

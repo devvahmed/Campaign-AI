@@ -1,147 +1,139 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Colors } from '../theme/colors';
 import { useCampaignStore } from '../store/campaignStore';
 import { Ionicons } from '@expo/vector-icons';
-
-const statusConfig: Record<string, { color: string; bg: string }> = {
-  SUCCESS:   { color: Colors.success, bg: 'rgba(48,209,88,0.15)' },
-  FAILED:    { color: Colors.error,   bg: 'rgba(255,69,58,0.15)' },
-  RECOVERED: { color: Colors.warning, bg: 'rgba(255,159,10,0.15)' },
-};
+import { useTheme } from '../theme/useTheme';
 
 export const OutcomeScreen = () => {
-  const navigation = useNavigation<any>();
+  const navigation      = useNavigation<any>();
+  const T               = useTheme();
   const { executionResult } = useCampaignStore();
 
   if (!executionResult) return null;
 
+  const statusConfig: Record<string, { color: string; bg: string }> = {
+    SUCCESS:   { color: T.success, bg: `${T.success}18` },
+    FAILED:    { color: T.error,   bg: `${T.error}18` },
+    RECOVERED: { color: T.warning, bg: `${T.warning}18` },
+  };
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      {/* Hero */}
-      <View style={styles.hero}>
-        <View style={styles.heroIcon}>
-          <Ionicons name="checkmark-done-circle" size={40} color={Colors.success} />
-        </View>
-        <Text style={styles.heroTitle}>Campaign Live!</Text>
-        <Text style={styles.heroSub}>Status: {executionResult.final_status}</Text>
-      </View>
+    <View style={[styles.wrap, { backgroundColor: T.bg }]}>
+      <StatusBar barStyle={T.isDarkMode ? 'light-content' : 'dark-content'} backgroundColor={T.bg} />
+      <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
-      {/* Metrics */}
-      <Text style={styles.sectionLabel}>BEFORE & AFTER</Text>
-      <View style={styles.metricsRow}>
-        <View style={[styles.metricBox, { borderColor: 'rgba(255,69,58,0.3)', backgroundColor: 'rgba(255,69,58,0.08)' }]}>
-          <Text style={styles.metricEpoch}>Before</Text>
-          <Text style={[styles.metricVal, { color: Colors.error }]}>-28%</Text>
-          <Text style={styles.metricDesc}>Sales Drop</Text>
+        {/* Hero card */}
+        <View style={[styles.hero, T.card, T.shadow, { borderColor: `${T.success}30` }]}>
+          <View style={[styles.heroIcon, { backgroundColor: `${T.success}18` }]}>
+            <Ionicons name="checkmark-done-circle" size={44} color={T.success} />
+          </View>
+          <Text style={[styles.heroTitle, { color: T.text }]}>Campaign Live!</Text>
+          <Text style={[styles.heroSub, { color: T.success }]}>{executionResult.final_status}</Text>
         </View>
-        <View style={styles.arrowWrap}>
-          <Ionicons name="arrow-forward" size={20} color={Colors.textTertiary} />
-        </View>
-        <View style={[styles.metricBox, { borderColor: 'rgba(48,209,88,0.3)', backgroundColor: 'rgba(48,209,88,0.08)' }]}>
-          <Text style={styles.metricEpoch}>Projected</Text>
-          <Text style={[styles.metricVal, { color: Colors.success }]}>+20%</Text>
-          <Text style={styles.metricDesc}>Recovery</Text>
-        </View>
-      </View>
 
-      {/* Execution Log */}
-      <Text style={styles.sectionLabel}>EXECUTION LOG</Text>
-      <View style={styles.logCard}>
-        {executionResult.execution_log.map((log: any, index: number) => {
-          const sc = statusConfig[log.status] ?? { color: Colors.textSecondary, bg: Colors.surfaceCard };
-          return (
-            <View key={index} style={[styles.logItem, index > 0 && styles.logItemBorder]}>
-              <View style={styles.logTop}>
-                <Text style={styles.logAction}>{log.action}</Text>
-                <View style={[styles.logBadge, { backgroundColor: sc.bg }]}>
-                  <Text style={[styles.logBadgeText, { color: sc.color }]}>{log.status}</Text>
+        {/* Before / After */}
+        <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>BEFORE & AFTER</Text>
+        <View style={styles.metricsRow}>
+          <View style={[styles.metricBox, T.cardSm, T.shadow, { borderColor: `${T.error}30` }]}>
+            <Text style={[styles.metricEpoch, { color: T.textSub }]}>Before</Text>
+            <Text style={[styles.metricVal, { color: T.error }]}>-28%</Text>
+            <Text style={[styles.metricDesc, { color: T.textTertiary }]}>Sales Drop</Text>
+          </View>
+          <View style={styles.arrowWrap}>
+            <Ionicons name="arrow-forward" size={20} color={T.textTertiary} />
+          </View>
+          <View style={[styles.metricBox, T.cardSm, T.shadow, { borderColor: `${T.success}30` }]}>
+            <Text style={[styles.metricEpoch, { color: T.textSub }]}>Projected</Text>
+            <Text style={[styles.metricVal, { color: T.success }]}>+20%</Text>
+            <Text style={[styles.metricDesc, { color: T.textTertiary }]}>Recovery</Text>
+          </View>
+        </View>
+
+        {/* Execution Log */}
+        <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>EXECUTION LOG</Text>
+        <View style={[styles.logCard, T.card, T.shadow]}>
+          {executionResult.execution_log.map((log: any, i: number) => {
+            const sc = statusConfig[log.status] ?? { color: T.textSub, bg: T.surfaceCard };
+            return (
+              <View key={i} style={[styles.logItem, i > 0 && { borderTopWidth: 1, borderTopColor: T.border }]}>
+                <View style={styles.logTop}>
+                  <Text style={[styles.logAction, { color: T.text }]}>{log.action}</Text>
+                  <View style={[styles.logBadge, { backgroundColor: sc.bg }]}>
+                    <Text style={[styles.logBadgeText, { color: sc.color }]}>{log.status}</Text>
+                  </View>
                 </View>
+                <View style={styles.logMeta}>
+                  <Text style={[styles.logMetaText, { color: T.textSub }]}>PKR {log.cost?.toLocaleString()}</Text>
+                  <Text style={[styles.logMetaDot, { color: T.textTertiary }]}>·</Text>
+                  <Text style={[styles.logMetaText, { color: T.textSub }]}>{log.latency_ms}ms</Text>
+                </View>
+                {log.error ? <Text style={[styles.logError, { color: T.error }]}>{log.error}</Text> : null}
               </View>
-              <View style={styles.logMeta}>
-                <Text style={styles.logMetaText}>PKR {log.cost?.toLocaleString()}</Text>
-                <Text style={styles.logMetaDot}>·</Text>
-                <Text style={styles.logMetaText}>{log.latency_ms}ms</Text>
-              </View>
-              {log.error ? <Text style={styles.logError}>{log.error}</Text> : null}
-            </View>
-          );
-        })}
-      </View>
+            );
+          })}
+        </View>
 
-      {/* Cost Summary */}
-      <View style={styles.costRow}>
-        <Text style={styles.costLabel}>Total Spend</Text>
-        <Text style={styles.costValue}>PKR {executionResult.total_cost?.toLocaleString()}</Text>
-      </View>
+        {/* Cost Summary */}
+        <View style={[styles.costRow, T.card, T.shadow]}>
+          <Text style={[styles.costLabel, { color: T.textSub }]}>Total Spend</Text>
+          <Text style={[styles.costValue, { color: T.primary }]}>PKR {executionResult.total_cost?.toLocaleString()}</Text>
+        </View>
 
-      <TouchableOpacity style={styles.newBtn} onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Dashboard' }] })} activeOpacity={0.85}>
-        <Ionicons name="refresh" size={18} color="#fff" />
-        <Text style={styles.newBtnText}>Start New Campaign</Text>
-      </TouchableOpacity>
-    </ScrollView>
+        {/* New Campaign CTA */}
+        <TouchableOpacity
+          style={[styles.newBtn, { backgroundColor: T.primary, shadowColor: T.primary }]}
+          onPress={() => navigation.reset({ index: 0, routes: [{ name: 'Dashboard' }] })}
+          activeOpacity={0.85}
+        >
+          <Ionicons name="refresh" size={18} color="#fff" />
+          <Text style={styles.newBtnText}>Start New Campaign</Text>
+        </TouchableOpacity>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
-  content: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 48 },
+  wrap:       { flex: 1 },
+  container:  { flex: 1 },
+  content:    { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 48 },
+  sectionLabel:{ fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 },
 
-  hero: {
-    alignItems: 'center', paddingVertical: 28,
-    backgroundColor: Colors.surfaceHigh, borderRadius: 20,
-    borderWidth: 1, borderColor: 'rgba(48,209,88,0.2)', marginBottom: 28,
+  hero:       {
+    alignItems: 'center', paddingVertical: 32,
+    borderWidth: 1, marginBottom: 28,
   },
-  heroIcon: {
-    width: 72, height: 72, borderRadius: 22,
-    backgroundColor: 'rgba(48,209,88,0.15)', justifyContent: 'center',
-    alignItems: 'center', marginBottom: 14,
-  },
-  heroTitle: { fontSize: 28, fontWeight: '700', color: Colors.textPrimary, marginBottom: 4 },
-  heroSub: { fontSize: 14, color: Colors.success, fontWeight: '500' },
-
-  sectionLabel: {
-    fontSize: 11, fontWeight: '600', color: Colors.textSecondary,
-    letterSpacing: 0.9, textTransform: 'uppercase', marginBottom: 10,
-  },
+  heroIcon:   { width: 76, height: 76, borderRadius: 24, justifyContent: 'center', alignItems: 'center', marginBottom: 14 },
+  heroTitle:  { fontSize: 30, fontWeight: '800', marginBottom: 6 },
+  heroSub:    { fontSize: 14, fontWeight: '600' },
 
   metricsRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 24 },
-  metricBox: {
-    flex: 1, padding: 16, borderRadius: 14, alignItems: 'center',
-    borderWidth: 1,
-  },
-  metricEpoch: { fontSize: 11, fontWeight: '600', color: Colors.textSecondary, marginBottom: 6 },
-  metricVal: { fontSize: 26, fontWeight: '700', marginBottom: 4 },
-  metricDesc: { fontSize: 12, color: Colors.textSecondary },
-  arrowWrap: { padding: 4 },
+  metricBox:  { flex: 1, padding: 18, alignItems: 'center', borderWidth: 1 },
+  metricEpoch:{ fontSize: 11, fontWeight: '600', textTransform: 'uppercase', marginBottom: 6 },
+  metricVal:  { fontSize: 28, fontWeight: '800', marginBottom: 4 },
+  metricDesc: { fontSize: 12 },
+  arrowWrap:  { padding: 4 },
 
-  logCard: {
-    backgroundColor: Colors.surfaceHigh, borderRadius: 16, overflow: 'hidden',
-    borderWidth: 1, borderColor: Colors.borderLight, marginBottom: 16,
-  },
-  logItem: { padding: 14 },
-  logItemBorder: { borderTopWidth: 1, borderTopColor: Colors.borderLight },
-  logTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
-  logAction: { color: Colors.textPrimary, fontWeight: '600', fontSize: 14, flex: 1 },
-  logBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 20 },
-  logBadgeText: { fontSize: 11, fontWeight: '700' },
-  logMeta: { flexDirection: 'row', gap: 6, alignItems: 'center' },
-  logMetaText: { color: Colors.textSecondary, fontSize: 12 },
-  logMetaDot: { color: Colors.textTertiary, fontSize: 12 },
-  logError: { color: Colors.error, fontSize: 12, marginTop: 4, fontStyle: 'italic' },
+  logCard:    { marginBottom: 16, overflow: 'hidden' },
+  logItem:    { padding: 16 },
+  logTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  logAction:  { fontWeight: '600', fontSize: 14, flex: 1 },
+  logBadge:   { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
+  logBadgeText:{ fontSize: 11, fontWeight: '700' },
+  logMeta:    { flexDirection: 'row', gap: 6, alignItems: 'center' },
+  logMetaText:{ fontSize: 12 },
+  logMetaDot: { fontSize: 12 },
+  logError:   { fontSize: 12, marginTop: 4, fontStyle: 'italic' },
 
-  costRow: {
-    flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center',
-    backgroundColor: Colors.surfaceHigh, padding: 16, borderRadius: 14,
-    borderWidth: 1, borderColor: Colors.borderLight, marginBottom: 20,
-  },
-  costLabel: { color: Colors.textSecondary, fontSize: 15 },
-  costValue: { color: Colors.primary, fontSize: 20, fontWeight: '700' },
+  costRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 18, marginBottom: 20 },
+  costLabel:  { fontSize: 15 },
+  costValue:  { fontSize: 22, fontWeight: '800' },
 
-  newBtn: {
-    backgroundColor: Colors.primary, paddingVertical: 17, borderRadius: 14,
+  newBtn:     {
+    paddingVertical: 18, borderRadius: 18,
     flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8,
+    shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.28, shadowRadius: 14, elevation: 7,
   },
-  newBtnText: { color: '#fff', fontSize: 17, fontWeight: '600' },
+  newBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
 });

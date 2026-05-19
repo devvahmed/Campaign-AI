@@ -5,3 +5,4 @@ pydantic
 google-generativeai
 python-dotenv
 firebase-admin
+resend
