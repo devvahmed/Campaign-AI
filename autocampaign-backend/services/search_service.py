@@ -1,5 +1,6 @@
 import httpx
 import os
+from duckduckgo_search import DDGS
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_SEARCH_API_KEY")
 SEARCH_ENGINE_ID = os.getenv("GOOGLE_SEARCH_ENGINE_ID")
@@ -174,42 +175,127 @@ def _fallback_competitors(product_name: str) -> list:
 
 
 def _fallback_trend() -> dict:
-    """Smart fallback based on Pakistani seasonal/cultural events 2025"""
-    import datetime
-    month = datetime.datetime.now().month
+    """Smart fallback based on dynamic market trajectory"""
+    return {
+        "topic": "Current Local Market Momentum",
+        "snippet": "Local markets are experiencing high digital engagement with a surge in localized social commerce.",
+        "source": "fallback_market",
+        "how_to_use": "Leverage dynamic personalized content to capture shifting consumer attention."
+    }
 
-    if month in [3, 4]:  # March-April = PSL + Eid season
-        return {
-            "topic": "PSL 2025 — Pakistan Super League Cricket Season",
-            "snippet": "PSL 10 is in full swing! Pakistan cricket fever is at its peak with sold-out stadiums across Karachi, Lahore, and Rawalpindi.",
-            "source": "fallback_seasonal",
-            "how_to_use": "Reference PSL excitement in ad copy for maximum engagement"
-        }
-    elif month in [5, 6]:  # May-June = Summer + Eid
-        return {
-            "topic": "Garmi ka Mausam — Pakistan Summer Season 2025",
-            "snippet": "Pakistan is entering peak summer with temperatures soaring. Cooling products, beverages, and light clothing are trending heavily.",
-            "source": "fallback_seasonal",
-            "how_to_use": "Use summer heat as a pain point that your product solves"
-        }
-    elif month in [9, 10, 11]:  # Sept-Nov = Wedding season
-        return {
-            "topic": "Shadi Season — Pakistani Wedding Season 2025",
-            "snippet": "Pakistan's peak wedding season is here! Mehndi, baraat, and walima events are trending across all major cities.",
-            "source": "fallback_seasonal",
-            "how_to_use": "Connect your product to wedding/celebration needs"
-        }
-    elif month == 12 or month == 1:  # Winter
-        return {
-            "topic": "Sardi ka Mausam — Pakistan Winter 2025",
-            "snippet": "Winter is here in Pakistan! Warm beverages, shawls, and indoor activities are trending across social media.",
-            "source": "fallback_seasonal",
-            "how_to_use": "Reference winter comfort and warmth in your ad"
-        }
-    else:
-        return {
-            "topic": "Pakistan Independence Day Spirit — Azaadi Festival",
-            "snippet": "Pakistani patriotism is running high with Azaadi celebrations and national pride trending on social media.",
-            "source": "fallback_seasonal",
-            "how_to_use": "Use Pakistan pride and patriotism to connect emotionally"
-        }
+
+def _sanitize_product_name(name: str) -> str:
+    """Strip special characters, trailing whitespace, and non-alphanumeric noise from product/brand names."""
+    import re
+    cleaned = re.sub(r'[^\w\s\-&]', '', name).strip()
+    # Collapse multiple spaces
+    cleaned = re.sub(r'\s+', ' ', cleaned)
+    return cleaned
+
+
+def _get_brand_search_context(product_name: str, business_type: str) -> str:
+    """Dynamically append rich, descriptive search tags based on business name or type."""
+    p_lower = product_name.lower()
+
+    # Brand-specific overrides — match common Pakistani brand names to tailored search queries
+    brand_overrides = {
+        "outfitters": "high-street urban streetwear model apparel casual fashion",
+        "khaadi": "pakistani lawn luxury embroidered ethnic fashion boutique",
+        "sapphire": "premium pakistani lawn printed collection pret wear",
+        "gul ahmed": "pakistani traditional lawn fabric prints elegant",
+        "sana safinaz": "luxury bridal lawn pakistani high-end fashion",
+        "ethnic": "ethnic pakistani kurta kurti embroidery festive collection",
+        "j.": "modern contemporary pakistani fashion minimalist chic",
+        "limelight": "affordable trendy pakistani women fashion collection",
+        "bonanza": "satrangi pakistani lawn cotton summer collection",
+        "pizza hut": "gourmet pizza restaurant cheesy delicious food platter",
+        "dominos": "pizza fast food delivery hot cheese toppings",
+        "kolachi": "pakistani fine dining restaurant seafood grill karachi",
+        "saeed ghani": "herbal beauty skincare organic natural cosmetics",
+        "daraz": "ecommerce online shopping gadgets deals technology",
+    }
+
+    for brand_key, context in brand_overrides.items():
+        if brand_key in p_lower:
+            return context
+
+    # Business-type-based context
+    type_contexts = {
+        "fashion": "high-street urban fashion model luxury boutique clothing apparel",
+        "food": "gourmet food platter restaurant delicious spicy cuisine",
+        "chai": "karak tea cup steam cardamom warm cozy beverage",
+        "beauty": "skincare cosmetic cream organic rose luxury beauty",
+        "electronics": "minimalist technology gadget device phone modern sleek",
+        "sports": "cricket match stadium victory action dynamic sports",
+        "jewelry": "exquisite gold jewelry bridal elegant luxury",
+        "sweets": "mithai sweets dessert celebration festive treats",
+    }
+
+    return type_contexts.get(business_type, "premium commercial product photography professional")
+
+
+async def search_product_image(product_name: str, business_type: str = "generic", products: list = None) -> str:
+    """
+    Search DuckDuckGo with searchType=image for high-resolution product backdrops.
+    Returns the first valid direct image URL, or "" on failure.
+    """
+    clean_name = _sanitize_product_name(product_name)
+    brand_context = _get_brand_search_context(clean_name, business_type)
+    query = f"{brand_context} high resolution"
+    
+    try:
+        results = DDGS().images(query, max_results=1)
+        if results and len(results) > 0:
+            return results[0].get('image', '')
+    except Exception as e:
+        print(f"[SearchService] DDGS Image Search error: {e}")
+        
+    return ""
+
+
+
+async def search_competitor_ads(competitor_name: str) -> list:
+    """Live search competitor active ads using Google Custom Search, falling back to free keyless DuckDuckGo search if keys are missing."""
+    query = f'site:facebook.com/ads/library "{competitor_name}" "active"'
+    
+    if GOOGLE_API_KEY and SEARCH_ENGINE_ID:
+        try:
+            async with httpx.AsyncClient() as client:
+                response = await client.get(
+                    "https://www.googleapis.com/customsearch/v1",
+                    params={
+                        "key": GOOGLE_API_KEY,
+                        "cx": SEARCH_ENGINE_ID,
+                        "q": query,
+                        "num": 3,
+                        "gl": "pk",
+                        "hl": "en"
+                    },
+                    timeout=10.0
+                )
+
+            if response.status_code == 200:
+                items = response.json().get("items", [])
+                if items:
+                    return [{"title": item.get("title", ""), "snippet": item.get("snippet", ""), "link": item.get("link", "")} for item in items]
+        except Exception as e:
+            print(f"[SearchService] Google competitor ad search error for '{competitor_name}': {e}")
+
+    # Keyless DuckDuckGo Search Fallback (100% free alternative)
+    print(f"[SearchService] Running free DuckDuckGo fallback search for '{competitor_name}'")
+    ddg_query = f"{competitor_name} Pakistan active sales discount promotion deals 2025"
+    try:
+        from duckduckgo_search import DDGS
+        import asyncio
+        
+        def run_ddg():
+            with DDGS() as ddgs:
+                return list(ddgs.text(ddg_query, max_results=3))
+                
+        results = await asyncio.to_thread(run_ddg)
+        if results:
+            return [{"title": r.get("title", ""), "snippet": r.get("body", ""), "link": r.get("href", "")} for r in results]
+    except Exception as e:
+        print(f"[SearchService] DDG competitor ad search error for '{competitor_name}': {e}")
+        
+    return []

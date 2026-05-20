@@ -15,6 +15,7 @@ class AnalyzeRequest(BaseModel):
     business_knowledge_level: str = "beginner"
     business_name: Optional[str] = None
     brand_color: Optional[str] = None
+    scenario_id: Optional[str] = None
 
 class UserRegisterRequest(BaseModel):
     email: str
@@ -22,6 +23,8 @@ class UserRegisterRequest(BaseModel):
     business_name: str
     website_url: str
     apply_brand_theme: bool = True
+    business_type: str = "generic"
+    products: Optional[str] = ""
 
 class UserLoginRequest(BaseModel):
     email: str

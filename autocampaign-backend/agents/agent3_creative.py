@@ -8,7 +8,7 @@ from services.video_service import generate_ad_video
 from services.search_service import search_pakistan_trends, search_competitors
 
 
-async def run_agent3(job_id: str, strategy: dict, business_knowledge_level: str = "beginner", base_url: str = None, original_inputs: dict = None, business_name: str = None, brand_color: str = None) -> tuple[Agent3Output, TraceLog]:
+async def run_agent3(job_id: str, strategy: dict, business_knowledge_level: str = "beginner", base_url: str = None, original_inputs: dict = None, business_name: str = None, brand_color: str = None, scenario_id: str = None, business_type: str = "generic", products: list = None, logo_url: str = "") -> tuple[Agent3Output, TraceLog]:
     start_time = time.time()
 
     # ── Step 1: Fetch live Pakistani trends via Google Custom Search ──────────
@@ -24,7 +24,11 @@ async def run_agent3(job_id: str, strategy: dict, business_knowledge_level: str 
             if isinstance(val, str):
                 search_text += " " + val.lower()
 
-    business_type = _detect_business_type(search_text)
+    detected_type = _detect_business_type(search_text)
+    if business_type and business_type != "generic":
+        business_type = business_type
+    else:
+        business_type = detected_type
 
     # ── Step 2: Also search for competitors with the product name ─────────────
     product_name = business_name if business_name else _extract_product_name(strategy, original_inputs)
@@ -122,31 +126,53 @@ async def run_agent3(job_id: str, strategy: dict, business_knowledge_level: str 
         video_prompt = f"Cinematic 4k commercial of {product_name} in Pakistan, celebrating {trend_topic}, slow motion, warm sunshine, shallow depth of field, high end production value"
 
     # ── Step 5: Generate ad image and promotional video in PARALLEL to save time ────
-    image_task = generate_ad_image(
+    asset_start = time.time()
+    real_image_url = await generate_ad_image(
         image_prompt, 
         base_url, 
         trend_context=trend_topic,
         ad_copy=ad_copy,
-        product_name=product_name
+        product_name=product_name,
+        business_type=business_type,
+        logo_url=logo_url,
+        brand_color=brand_color,
+        strategy=strategy,
+        products=products
     )
-    video_task = generate_ad_video(video_prompt)
-
-    real_image_url, real_video_url = await asyncio.gather(image_task, video_task)
+    real_video_url = await generate_ad_video(video_prompt, business_type=business_type, image_url=real_image_url)
+    
+    asset_latency_ms = float((time.time() - asset_start) * 1000)
 
     if not real_video_url:
         prod_lower = product_name.lower()
         if business_type == "beauty" or "soap" in prod_lower or "skin" in prod_lower:
-            real_video_url = "https://www.w3schools.com/html/mov_bbb.mp4"
+            real_video_url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4"
         elif business_type == "chai" or "chai" in prod_lower or "tea" in prod_lower:
-            real_video_url = "https://www.w3schools.com/html/movie.mp4"
-        elif business_type == "food" or "restaurant" in prod_lower or "dhabha" in prod_lower or "karahi" in prod_lower:
-            real_video_url = "https://www.w3schools.com/html/mov_bbb.mp4"
-        elif business_type == "fashion" or "apparel" in prod_lower or "lawn" in prod_lower or "clothing" in prod_lower:
-            real_video_url = "https://www.w3schools.com/html/movie.mp4"
-        elif business_type == "sports" or "cricket" in prod_lower:
-            real_video_url = "https://www.w3schools.com/html/mov_bbb.mp4"
+            real_video_url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+        elif business_type == "food" or "restaurant" in prod_lower or "dhabha" in prod_lower or "karahi" in prod_lower or "barbecue" in prod_lower or "bbq" in prod_lower:
+            real_video_url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4"
+        elif business_type == "fashion" or "apparel" in prod_lower or "lawn" in prod_lower or "clothing" in prod_lower or "style" in prod_lower:
+            real_video_url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4"
+        elif business_type == "electronics" or "tech" in prod_lower or "computer" in prod_lower or "mobile" in prod_lower:
+            real_video_url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerMeltdowns.mp4"
+        elif business_type == "sports" or "cricket" in prod_lower or "run" in prod_lower:
+            real_video_url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4"
         else:
-            real_video_url = "https://www.w3schools.com/html/mov_bbb.mp4"
+            real_video_url = "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+
+    # Log the AI asset generation trace
+    try:
+        import random
+        from utils.logger import log_asset_generation_trace
+        generation_seed = random.randint(100000, 999999)
+        log_asset_generation_trace(
+            response_time_ms=asset_latency_ms,
+            seed=generation_seed,
+            image_url=real_image_url or "",
+            video_url=real_video_url or ""
+        )
+    except Exception as e:
+        print(f"[CreativeAgent] Failed to log asset generation trace: {e}")
 
     output_data = {
         "ad_copy": ad_copy,
@@ -238,11 +264,10 @@ def _build_rich_image_prompt(business_type: str, product_name: str, trend_topic:
             "spices (cardamom, cinnamon) scattered artistically beside cup"
         ),
         "fashion": (
-            f"High-end Pakistani fashion advertisement for {product_name}, "
-            "elegant Pakistani lawn/silk garment on display, "
-            "vibrant embroidery details, Eid celebration aesthetic, "
-            "boutique DHA Lahore setting, golden hour window light, "
-            "fresh jasmine flowers in frame, luxurious fabric texture closeup"
+            f"High-contrast premium Pakistani retail photography of {product_name} "
+            "Sapphire or Ethnic style Premium Lawn, Maroon Festive suit with gold embroidery on model, "
+            "gorgeous patterns, model photoshoot, elegant clothing shop or DHA Lahore boutique background, "
+            "warm golden hour lighting, cinematic fashion photoshoot, highly detailed"
         ),
         "sports": (
             f"Dynamic Pakistani sports advertisement for {product_name}, "
