@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors } from '../theme/colors';
+import { useTheme } from '../theme/useTheme';
 
 interface StatusBadgeProps {
   label: string;
@@ -8,11 +8,12 @@ interface StatusBadgeProps {
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ label, type }) => {
+  const T = useTheme();
   const config = {
-    success: { bg: 'rgba(48,209,88,0.15)',  color: Colors.success },
-    warning: { bg: 'rgba(255,159,10,0.15)', color: Colors.warning },
-    error:   { bg: 'rgba(255,69,58,0.15)',  color: Colors.error },
-    info:    { bg: 'rgba(10,132,255,0.15)', color: Colors.primary },
+    success: { bg: `${T.success}18`,  color: T.success },
+    warning: { bg: `${T.warning}18`, color: T.warning },
+    error:   { bg: `${T.error}18`,  color: T.error },
+    info:    { bg: `${T.primary}18`, color: T.primary },
   };
   const { bg, color } = config[type];
 

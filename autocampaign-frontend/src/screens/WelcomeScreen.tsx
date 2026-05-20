@@ -48,7 +48,7 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
         {/* Logo */}
         <Animated.View style={[styles.logoBlock, { transform: [{ scale: logoScale }] }]}>
           <View style={[styles.logoOuter, { backgroundColor: T.pillBg, borderColor: `${T.primary}28` }]}>
-            <View style={[styles.logoInner, T.card]}>
+            <View style={[styles.logoInner, T.card, T.shadow]}>
               <Ionicons name="sparkles" size={38} color={T.primary} />
             </View>
           </View>
@@ -56,15 +56,15 @@ export const WelcomeScreen = ({ onContinue }: WelcomeScreenProps) => {
 
         <Text style={[styles.headline, { color: T.text }]}>AutoCampaign AI</Text>
         <Text style={[styles.subheadline, { color: T.textSub }]}>
-          Pakistan's First{'\n'}Autonomous Marketing Intelligence Platform
+          Pakistan's First{'\n'}Autonomous Marketing platform
         </Text>
 
         {/* Feature Pills */}
         <View style={styles.pillsContainer}>
           {features.map((f, i) => (
-            <View key={i} style={[styles.pill, T.cardSm, T.shadow]}>
+            <View key={i} style={[styles.pill, T.card, T.shadow]}>
               <View style={[styles.pillIcon, { backgroundColor: T.pillBg }]}>
-                <Ionicons name={f.icon as any} size={15} color={T.primary} />
+                <Ionicons name={f.icon as any} size={16} color={T.primary} />
               </View>
               <Text style={[styles.pillText, { color: T.text }]}>{f.text}</Text>
             </View>
@@ -114,38 +114,39 @@ const styles = StyleSheet.create({
   },
   logoBlock:  { marginBottom: 28 },
   logoOuter:  {
-    width: 104, height: 104, borderRadius: 32,
+    width: 112, height: 112, borderRadius: 36,
     alignItems: 'center', justifyContent: 'center',
     borderWidth: 1,
   },
   logoInner:  {
-    width: 74, height: 74, borderRadius: 22,
+    width: 82, height: 82, borderRadius: 26,
     alignItems: 'center', justifyContent: 'center',
   },
   headline:   { fontSize: 34, fontWeight: '800', letterSpacing: 0.4, textAlign: 'center', marginBottom: 10 },
   subheadline:{ fontSize: 16, textAlign: 'center', lineHeight: 24, marginBottom: 36 },
-  pillsContainer: { gap: 10, width: '100%', marginBottom: 32 },
+  pillsContainer: { gap: 12, width: '100%', marginBottom: 32 },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    paddingVertical: 14,
-    paddingHorizontal: 16,
+    gap: 14,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderWidth: 0, // fully floating card
   },
   pillIcon: {
-    width: 34, height: 34, borderRadius: 10,
+    width: 38, height: 38, borderRadius: 12,
     alignItems: 'center', justifyContent: 'center',
   },
-  pillText: { fontSize: 14, fontWeight: '500' },
+  pillText: { fontSize: 15, fontWeight: '600' },
   poweredRow:  { flexDirection: 'row', alignItems: 'center', gap: 8 },
   poweredDot:  { width: 4, height: 4, borderRadius: 2 },
-  poweredText: { fontSize: 12, fontWeight: '500' },
-  btnContainer:{ gap: 12, alignItems: 'center' },
+  poweredText: { fontSize: 12, fontWeight: '600' },
+  btnContainer:{ gap: 12, alignItems: 'center', width: '100%' },
   ctaBtn: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 10, borderRadius: 18, height: 60, width: '100%',
-    shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.3, shadowRadius: 16, elevation: 8,
+    gap: 10, borderRadius: 32, height: 60, width: '100%',
+    shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.18, shadowRadius: 16, elevation: 8,
   },
   ctaBtnText:  { color: '#FFFFFF', fontSize: 17, fontWeight: '700' },
-  ctaHint:     { fontSize: 12, fontWeight: '500', letterSpacing: 0.5 },
+  ctaHint:     { fontSize: 12, fontWeight: '600', letterSpacing: 0.5 },
 });

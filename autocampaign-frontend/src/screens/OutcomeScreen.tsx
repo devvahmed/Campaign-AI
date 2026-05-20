@@ -24,8 +24,8 @@ export const OutcomeScreen = () => {
       <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
 
         {/* Hero card */}
-        <View style={[styles.hero, T.card, T.shadow, { borderColor: `${T.success}30` }]}>
-          <View style={[styles.heroIcon, { backgroundColor: `${T.success}18` }]}>
+        <View style={[styles.hero, T.cardLg, T.shadow, { borderColor: `${T.success}20` }]}>
+          <View style={[styles.heroIcon, { backgroundColor: `${T.success}12` }]}>
             <Ionicons name="checkmark-done-circle" size={44} color={T.success} />
           </View>
           <Text style={[styles.heroTitle, { color: T.text }]}>Campaign Live!</Text>
@@ -35,7 +35,7 @@ export const OutcomeScreen = () => {
         {/* Before / After */}
         <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>BEFORE & AFTER</Text>
         <View style={styles.metricsRow}>
-          <View style={[styles.metricBox, T.cardSm, T.shadow, { borderColor: `${T.error}30` }]}>
+          <View style={[styles.metricBox, T.card, T.shadow, { borderColor: `${T.error}20` }]}>
             <Text style={[styles.metricEpoch, { color: T.textSub }]}>Before</Text>
             <Text style={[styles.metricVal, { color: T.error }]}>-28%</Text>
             <Text style={[styles.metricDesc, { color: T.textTertiary }]}>Sales Drop</Text>
@@ -43,7 +43,7 @@ export const OutcomeScreen = () => {
           <View style={styles.arrowWrap}>
             <Ionicons name="arrow-forward" size={20} color={T.textTertiary} />
           </View>
-          <View style={[styles.metricBox, T.cardSm, T.shadow, { borderColor: `${T.success}30` }]}>
+          <View style={[styles.metricBox, T.card, T.shadow, { borderColor: `${T.success}20` }]}>
             <Text style={[styles.metricEpoch, { color: T.textSub }]}>Projected</Text>
             <Text style={[styles.metricVal, { color: T.success }]}>+20%</Text>
             <Text style={[styles.metricDesc, { color: T.textTertiary }]}>Recovery</Text>
@@ -52,7 +52,7 @@ export const OutcomeScreen = () => {
 
         {/* Execution Log */}
         <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>EXECUTION LOG</Text>
-        <View style={[styles.logCard, T.card, T.shadow]}>
+        <View style={[styles.logCard, T.cardLg, T.shadow]}>
           {executionResult.execution_log.map((log: any, i: number) => {
             const sc = statusConfig[log.status] ?? { color: T.textSub, bg: T.surfaceCard };
             return (
@@ -75,7 +75,7 @@ export const OutcomeScreen = () => {
         </View>
 
         {/* Cost Summary */}
-        <View style={[styles.costRow, T.card, T.shadow]}>
+        <View style={[styles.costRow, T.cardLg, T.shadow]}>
           <Text style={[styles.costLabel, { color: T.textSub }]}>Total Spend</Text>
           <Text style={[styles.costValue, { color: T.primary }]}>PKR {executionResult.total_cost?.toLocaleString()}</Text>
         </View>
@@ -98,40 +98,40 @@ const styles = StyleSheet.create({
   wrap:       { flex: 1 },
   container:  { flex: 1 },
   content:    { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 48 },
-  sectionLabel:{ fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 },
+  sectionLabel:{ fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10, marginTop: 4 },
 
   hero:       {
     alignItems: 'center', paddingVertical: 32,
     borderWidth: 1, marginBottom: 28,
   },
-  heroIcon:   { width: 76, height: 76, borderRadius: 24, justifyContent: 'center', alignItems: 'center', marginBottom: 14 },
+  heroIcon:   { width: 76, height: 76, borderRadius: 38, justifyContent: 'center', alignItems: 'center', marginBottom: 14 },
   heroTitle:  { fontSize: 30, fontWeight: '800', marginBottom: 6 },
   heroSub:    { fontSize: 14, fontWeight: '600' },
 
   metricsRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 24 },
   metricBox:  { flex: 1, padding: 18, alignItems: 'center', borderWidth: 1 },
-  metricEpoch:{ fontSize: 11, fontWeight: '600', textTransform: 'uppercase', marginBottom: 6 },
+  metricEpoch:{ fontSize: 11, fontWeight: '700', textTransform: 'uppercase', marginBottom: 6 },
   metricVal:  { fontSize: 28, fontWeight: '800', marginBottom: 4 },
-  metricDesc: { fontSize: 12 },
+  metricDesc: { fontSize: 12, fontWeight: '600' },
   arrowWrap:  { padding: 4 },
 
-  logCard:    { marginBottom: 16, overflow: 'hidden' },
-  logItem:    { padding: 16 },
+  logCard:    { marginBottom: 20, overflow: 'hidden', borderWidth: 0 },
+  logItem:    { padding: 18 },
   logTop:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
   logAction:  { fontWeight: '600', fontSize: 14, flex: 1 },
   logBadge:   { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20 },
   logBadgeText:{ fontSize: 11, fontWeight: '700' },
   logMeta:    { flexDirection: 'row', gap: 6, alignItems: 'center' },
-  logMetaText:{ fontSize: 12 },
+  logMetaText:{ fontSize: 12, fontWeight: '600' },
   logMetaDot: { fontSize: 12 },
   logError:   { fontSize: 12, marginTop: 4, fontStyle: 'italic' },
 
-  costRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 18, marginBottom: 20 },
-  costLabel:  { fontSize: 15 },
+  costRow:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, marginBottom: 24, borderWidth: 0 },
+  costLabel:  { fontSize: 15, fontWeight: '600' },
   costValue:  { fontSize: 22, fontWeight: '800' },
 
   newBtn:     {
-    paddingVertical: 18, borderRadius: 18,
+    height: 58, borderRadius: 32,
     flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8,
     shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.28, shadowRadius: 14, elevation: 7,
   },

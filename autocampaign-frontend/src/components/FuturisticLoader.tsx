@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
 import { View, Animated, Easing, StyleSheet } from 'react-native';
-import { Colors } from '../theme/colors';
+import { useTheme } from '../theme/useTheme';
 
 export const FuturisticLoader = () => {
+  const T = useTheme();
   const rotation = useRef(new Animated.Value(0)).current;
   const pulse = useRef(new Animated.Value(1)).current;
 
@@ -19,7 +20,7 @@ export const FuturisticLoader = () => {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulse, {
-          toValue: 1.5,
+          toValue: 1.3,
           duration: 800,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
@@ -44,13 +45,23 @@ export const FuturisticLoader = () => {
       <Animated.View
         style={[
           styles.outerRing,
-          { transform: [{ rotate: spin }] },
+          {
+            transform: [{ rotate: spin }],
+            borderTopColor: T.primary,
+            borderRightColor: T.primary,
+            borderBottomColor: `${T.primary}30`,
+            borderLeftColor: `${T.primary}30`,
+          },
         ]}
       />
       <Animated.View
         style={[
           styles.innerCircle,
-          { transform: [{ scale: pulse }] },
+          {
+            transform: [{ scale: pulse }],
+            backgroundColor: T.primary,
+            shadowColor: T.primary,
+          },
         ]}
       />
     </View>
@@ -71,20 +82,14 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     borderWidth: 3,
     borderColor: 'transparent',
-    borderTopColor: Colors.primary,
-    borderBottomColor: 'rgba(10, 132, 255, 0.3)',
-    borderLeftColor: 'rgba(10, 132, 255, 0.3)',
-    borderRightColor: Colors.primary,
   },
   innerCircle: {
     width: 16,
     height: 16,
     borderRadius: 8,
-    backgroundColor: Colors.primary,
-    shadowColor: Colors.primary,
     shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 10,
-    elevation: 5,
+    shadowOpacity: 0.6,
+    shadowRadius: 8,
+    elevation: 4,
   },
 });

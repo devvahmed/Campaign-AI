@@ -19,6 +19,17 @@ const getBackendUrl = (): string => {
   if (Platform.OS === 'ios') {
     return 'http://localhost:8000';
   }
+  
+  // Explicit route for desktop web browser testing (dynamically supports local IP routing)
+  if (Platform.OS === 'web') {
+    if (typeof window !== 'undefined' && window.location) {
+      const hostname = window.location.hostname;
+      if (hostname && hostname !== '') {
+        return `http://${hostname}:8000`;
+      }
+    }
+    return 'http://localhost:8000';
+  }
 
   return 'http://192.168.100.33:8000';
 };
@@ -41,7 +52,7 @@ export const loadScenario = async (id: string) => {
   }
 };
 
-export const analyzeData = async (jobId: string, inputs: any, budget: number, businessLevel: string, businessName?: string, brandColor?: string) => {
+export const analyzeData = async (jobId: string, inputs: any, budget: number, businessLevel: string, businessName?: string, brandColor?: string, scenarioId?: string) => {
   try {
     const payload: any = {
       job_id: jobId,
@@ -51,6 +62,7 @@ export const analyzeData = async (jobId: string, inputs: any, budget: number, bu
     };
     if (businessName) payload.business_name = businessName;
     if (brandColor) payload.brand_color = brandColor;
+    if (scenarioId) payload.scenario_id = scenarioId;
 
     const res = await api.post('/api/analyze', payload);
     return res.data;
@@ -67,7 +79,8 @@ export const approveCampaign = async (
   customerLeads?: string[], 
   assets?: any,
   businessName?: string,
-  brandColor?: string
+  brandColor?: string,
+  websiteUrl?: string
 ) => {
   try {
     const payload: any = {
@@ -88,6 +101,7 @@ export const approveCampaign = async (
 
     if (businessName) payload.business_name = businessName;
     if (brandColor) payload.brand_color = brandColor;
+    if (websiteUrl) payload.website_url = websiteUrl;
     
     const res = await api.post('/api/approve', payload);
     return res.data;
@@ -107,14 +121,16 @@ export const getTrace = async (jobId: string) => {
   }
 };
 
-export const registerUser = async (email: string, password: string, businessName: string, websiteUrl: string, applyBrandTheme: boolean = true) => {
+export const registerUser = async (email: string, password: string, businessName: string, websiteUrl: string, applyBrandTheme: boolean = true, businessType: string = "generic", products: string = "") => {
   try {
     const res = await api.post('/api/auth/register', {
       email,
       password,
       business_name: businessName,
       website_url: websiteUrl,
-      apply_brand_theme: applyBrandTheme
+      apply_brand_theme: applyBrandTheme,
+      business_type: businessType,
+      products: products
     });
     return res.data;
   } catch (error) {
@@ -132,6 +148,31 @@ export const loginUser = async (email: string, password: string) => {
     return res.data;
   } catch (error) {
     console.error("loginUser Error:", error);
+    throw error;
+  }
+};
+
+export const getLiveCompetitors = async (businessName: string) => {
+  try {
+    const res = await api.get('/api/competitors/live', {
+      params: { business_name: businessName }
+    });
+    return res.data;
+  } catch (error) {
+    console.error("getLiveCompetitors Error:", error);
+    throw error;
+  }
+};
+
+export const approveCampaignMultipart = async (formData: FormData) => {
+  try {
+    const res = await api.post('/api/approve', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      timeout: 180000,
+    });
+    return res.data;
+  } catch (error) {
+    console.error("approveCampaignMultipart Error:", error);
     throw error;
   }
 };

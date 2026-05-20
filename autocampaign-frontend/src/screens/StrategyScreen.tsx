@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Colors } from '../theme/colors';
 import { useCampaignStore } from '../store/campaignStore';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useTheme } from '../theme/useTheme';
 
 export const StrategyScreen = () => {
   const navigation = useNavigation<any>();
+  const T = useTheme();
   const { strategy, setAssets, jobId, businessLevel } = useCampaignStore();
   const [loading, setLoading] = useState(false);
 
@@ -18,57 +18,57 @@ export const StrategyScreen = () => {
   if (!strategy) return null;
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Trend aur Strategy</Text>
-      <Text style={styles.subtitle}>Apki Business Strategy</Text>
+    <ScrollView style={[styles.container, { backgroundColor: T.bg }]} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+      <Text style={[styles.title, { color: T.text }]}>Trend aur Strategy</Text>
+      <Text style={[styles.subtitle, { color: T.textSub }]}>Apki Business Strategy</Text>
 
       {/* Root Cause */}
-      <View style={styles.rootCauseBox}>
-        <View style={styles.rootIcon}>
-          <Ionicons name="search" size={16} color={Colors.warning} />
+      <View style={[styles.rootCauseBox, T.card, T.shadow, { backgroundColor: `${T.warning}08`, borderColor: `${T.warning}20` }]}>
+        <View style={[styles.rootIcon, { backgroundColor: `${T.warning}18` }]}>
+          <Ionicons name="search" size={16} color={T.warning} />
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={styles.rootLabel}>Asal Masla</Text>
-          <Text style={styles.rootText}>{strategy.root_cause}</Text>
+          <Text style={[styles.rootLabel, { color: T.warning }]}>Asal Masla</Text>
+          <Text style={[styles.rootText, { color: T.text }]}>{strategy.root_cause}</Text>
         </View>
       </View>
 
       {/* ROI Predictions */}
-      <Text style={styles.sectionLabel}>KITNA FAIDA HOGA (ROI)</Text>
+      <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>KITNA FAIDA HOGA (ROI)</Text>
       <View style={styles.roiRow}>
         {[
-          { label: 'Conservative', value: strategy.roi_prediction.low, color: Colors.textSecondary },
-          { label: 'Expected', value: strategy.roi_prediction.mid, color: Colors.primary, featured: true },
-          { label: 'Optimistic', value: strategy.roi_prediction.high, color: Colors.success },
+          { label: 'Conservative', value: strategy.roi_prediction.low, color: T.textSub, bg: T.surface, border: T.border },
+          { label: 'Expected', value: strategy.roi_prediction.mid, color: T.primary, featured: true, bg: `${T.primary}08`, border: `${T.primary}30` },
+          { label: 'Optimistic', value: strategy.roi_prediction.high, color: T.success, bg: T.surface, border: T.border },
         ].map((item, i) => (
-          <View key={i} style={[styles.roiCard, item.featured && styles.roiFeatured]}>
-            <Text style={[styles.roiLabel, { color: item.featured ? Colors.primary : Colors.textSecondary }]}>{item.label}</Text>
+          <View key={i} style={[styles.roiCard, T.card, T.shadow, { backgroundColor: item.bg, borderColor: item.border }]}>
+            <Text style={[styles.roiLabel, { color: item.featured ? T.primary : T.textSub }]}>{item.label}</Text>
             <Text style={[styles.roiValue, { color: item.color }]}>+{item.value}%</Text>
           </View>
         ))}
       </View>
 
       {/* Action Chain */}
-      <Text style={styles.sectionLabel}>KIA KRNA CHAHIYE</Text>
+      <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>KIA KRNA CHAHIYE</Text>
       {strategy.action_chain.map((action: any, index: number) => (
-        <View key={index} style={[styles.actionCard, !action.is_feasible && styles.actionFaded]}>
+        <View key={index} style={[styles.actionCard, T.card, T.shadow, !action.is_feasible && styles.actionFaded]}>
           <View style={styles.actionTop}>
-            <View style={styles.actionNumBadge}>
-              <Text style={styles.actionNum}>{index + 1}</Text>
+            <View style={[styles.actionNumBadge, { backgroundColor: `${T.primary}18` }]}>
+              <Text style={[styles.actionNum, { color: T.primary }]}>{index + 1}</Text>
             </View>
-            <Text style={styles.actionName}>{action.name}</Text>
-            <View style={[styles.feasBadge, { backgroundColor: action.is_feasible ? 'rgba(48,209,88,0.15)' : 'rgba(255,69,58,0.15)' }]}>
-              <Text style={[styles.feasText, { color: action.is_feasible ? Colors.success : Colors.error }]}>
+            <Text style={[styles.actionName, { color: T.text }]}>{action.name}</Text>
+            <View style={[styles.feasBadge, { backgroundColor: action.is_feasible ? `${T.success}18` : `${T.error}18` }]}>
+              <Text style={[styles.feasText, { color: action.is_feasible ? T.success : T.error }]}>
                 {action.is_feasible ? 'Feasible' : 'Over Budget'}
               </Text>
             </View>
           </View>
-          <Text style={styles.actionDesc}>{action.description}</Text>
-          <Text style={styles.actionCost}>PKR {action.budget_required?.toLocaleString()}</Text>
+          <Text style={[styles.actionDesc, { color: T.textSub }]}>{action.description}</Text>
+          <Text style={[styles.actionCost, { color: T.text }]}>PKR {action.budget_required?.toLocaleString()}</Text>
         </View>
       ))}
 
-      <TouchableOpacity style={styles.generateBtn} onPress={handleGenerateAssets} activeOpacity={0.85}>
+      <TouchableOpacity style={[styles.generateBtn, { backgroundColor: T.primary, shadowColor: T.primary }]} onPress={handleGenerateAssets} activeOpacity={0.85}>
         <Ionicons name="color-palette" size={18} color="#fff" />
         <Text style={styles.generateBtnText}>View Creative Assets</Text>
       </TouchableOpacity>
@@ -77,63 +77,58 @@ export const StrategyScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: Colors.background },
+  container: { flex: 1 },
   content: { paddingHorizontal: 20, paddingTop: 16, paddingBottom: 48 },
 
-  title: { fontSize: 32, fontWeight: '700', color: Colors.textPrimary },
-  subtitle: { fontSize: 15, color: Colors.textSecondary, marginBottom: 20, marginTop: 4 },
+  title: { fontSize: 32, fontWeight: '800', letterSpacing: 0.2 },
+  subtitle: { fontSize: 15, marginBottom: 20, marginTop: 4 },
 
   rootCauseBox: {
     flexDirection: 'row', gap: 12, alignItems: 'flex-start',
-    backgroundColor: 'rgba(255,159,10,0.08)', padding: 14, borderRadius: 14,
-    borderWidth: 1, borderColor: 'rgba(255,159,10,0.25)', marginBottom: 24,
+    padding: 16, borderRadius: 24, borderWidth: 1, marginBottom: 24,
   },
   rootIcon: {
-    width: 32, height: 32, borderRadius: 10,
-    backgroundColor: 'rgba(255,159,10,0.18)',
+    width: 36, height: 36, borderRadius: 12,
     justifyContent: 'center', alignItems: 'center',
   },
-  rootLabel: { fontSize: 11, fontWeight: '600', color: Colors.warning, letterSpacing: 0.5, marginBottom: 4 },
-  rootText: { color: Colors.textPrimary, fontSize: 14, lineHeight: 20 },
+  rootLabel: { fontSize: 11, fontWeight: '700', letterSpacing: 0.5, marginBottom: 4 },
+  rootText: { fontSize: 14, lineHeight: 20 },
 
   sectionLabel: {
-    fontSize: 11, fontWeight: '600', color: Colors.textSecondary,
-    letterSpacing: 0.9, textTransform: 'uppercase', marginBottom: 10,
+    fontSize: 11, fontWeight: '700',
+    letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 12,
   },
 
   roiRow: { flexDirection: 'row', gap: 10, marginBottom: 24 },
   roiCard: {
-    flex: 1, backgroundColor: Colors.surfaceHigh, padding: 14,
-    borderRadius: 14, alignItems: 'center',
-    borderWidth: 1, borderColor: Colors.borderLight,
+    flex: 1, padding: 14,
+    borderRadius: 20, alignItems: 'center',
+    borderWidth: 1,
   },
-  roiFeatured: {
-    borderColor: 'rgba(10,132,255,0.4)',
-    backgroundColor: 'rgba(10,132,255,0.08)',
-  },
-  roiLabel: { fontSize: 11, fontWeight: '600', marginBottom: 6 },
-  roiValue: { fontSize: 22, fontWeight: '700' },
+  roiLabel: { fontSize: 11, fontWeight: '700', marginBottom: 6 },
+  roiValue: { fontSize: 22, fontWeight: '800' },
 
   actionCard: {
-    backgroundColor: Colors.surfaceHigh, borderRadius: 14, padding: 14,
-    borderWidth: 1, borderColor: Colors.borderLight, marginBottom: 10,
+    borderRadius: 24, padding: 16,
+    borderWidth: 1, marginBottom: 12,
   },
   actionFaded: { opacity: 0.5 },
-  actionTop: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 8 },
+  actionTop: { flexDirection: 'row', alignItems: 'center', gap: 10, marginBottom: 10 },
   actionNumBadge: {
-    width: 26, height: 26, borderRadius: 8,
-    backgroundColor: 'rgba(10,132,255,0.2)', justifyContent: 'center', alignItems: 'center',
+    width: 28, height: 28, borderRadius: 10,
+    justifyContent: 'center', alignItems: 'center',
   },
-  actionNum: { color: Colors.primary, fontWeight: '700', fontSize: 13 },
-  actionName: { flex: 1, color: Colors.textPrimary, fontWeight: '600', fontSize: 15 },
-  feasBadge: { paddingHorizontal: 8, paddingVertical: 4, borderRadius: 20 },
+  actionNum: { fontWeight: '800', fontSize: 13 },
+  actionName: { flex: 1, fontWeight: '700', fontSize: 15 },
+  feasBadge: { paddingHorizontal: 10, paddingVertical: 5, borderRadius: 20 },
   feasText: { fontSize: 11, fontWeight: '700' },
-  actionDesc: { color: Colors.textSecondary, fontSize: 13, lineHeight: 18, marginBottom: 8 },
-  actionCost: { color: Colors.textPrimary, fontSize: 13, fontWeight: '600' },
+  actionDesc: { fontSize: 13, lineHeight: 18, marginBottom: 10 },
+  actionCost: { fontSize: 14, fontWeight: '700' },
 
   generateBtn: {
-    backgroundColor: Colors.primary, paddingVertical: 17, borderRadius: 14,
+    height: 58, borderRadius: 32,
     flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8, marginTop: 8,
+    shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.18, shadowRadius: 16, elevation: 8,
   },
-  generateBtnText: { color: '#fff', fontSize: 17, fontWeight: '600' },
+  generateBtnText: { color: '#fff', fontSize: 17, fontWeight: '700' },
 });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, TouchableOpacity, Dimensions } from 'react-native';
-import { Colors } from '../theme/colors';
 import { useCampaignStore } from '../store/campaignStore';
+import { useTheme } from '../theme/useTheme';
 
 const { width, height } = Dimensions.get('window');
 
@@ -48,6 +48,7 @@ const TOUR_STEPS = [
 ];
 
 export const AppTour = () => {
+  const T = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   
@@ -112,39 +113,54 @@ export const AppTour = () => {
 
   return (
     <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
-      <View style={styles.overlay} pointerEvents="auto" />
+      <View style={[styles.overlay, { backgroundColor: T.isDarkMode ? 'rgba(0,0,0,0.7)' : 'rgba(26,28,36,0.3)' }]} pointerEvents="auto" />
       
       <Animated.View style={[
         styles.tourBox,
-        { top: positionAnim.y, left: positionAnim.x }
+        T.cardLg,
+        T.shadow,
+        {
+          top: positionAnim.y,
+          left: positionAnim.x,
+          borderColor: T.isDarkMode ? T.borderMid : T.border,
+        }
       ]}>
         
         {/* The Host Character */}
-        <View style={styles.hostContainer}>
+        <View style={[styles.hostContainer, { backgroundColor: T.primary, borderColor: T.surface }]}>
           <Text style={styles.hostEmoji}>🤖</Text>
         </View>
 
         <Animated.View style={{ opacity: fadeAnim }}>
-          <Text style={styles.title}>{step.title}</Text>
-          <Text style={styles.text}>{step.text}</Text>
+          <Text style={[styles.title, { color: T.text }]}>{step.title}</Text>
+          <Text style={[styles.text, { color: T.textSub }]}>{step.text}</Text>
           
-          {step.question ? <Text style={styles.questionText}>{step.question}</Text> : null}
+          {step.question ? <Text style={[styles.questionText, { color: T.text }]}>{step.question}</Text> : null}
           
           {step.options ? (
             <View style={styles.optionsContainer}>
               {step.options.map((opt, idx) => (
-                <TouchableOpacity key={idx} style={styles.optionButton} onPress={() => handleOptionSelect(opt)}>
-                  <Text style={styles.optionText}>{opt}</Text>
+                <TouchableOpacity
+                  key={idx}
+                  style={[styles.optionButton, { backgroundColor: T.surfaceCard, borderColor: T.border }]}
+                  onPress={() => handleOptionSelect(opt)}
+                  activeOpacity={0.8}
+                >
+                  <Text style={[styles.optionText, { color: T.text }]}>{opt}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           ) : (
             <View style={styles.footer}>
-              <TouchableOpacity onPress={handleSkip}>
-                <Text style={styles.skipText}>Skip Tour</Text>
+              <TouchableOpacity onPress={handleSkip} activeOpacity={0.7}>
+                <Text style={[styles.skipText, { color: T.error }]}>Skip Tour</Text>
               </TouchableOpacity>
               
-              <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+              <TouchableOpacity
+                style={[styles.nextButton, { backgroundColor: T.primary, shadowColor: T.primary }]}
+                onPress={handleNext}
+                activeOpacity={0.85}
+              >
                 <Text style={styles.nextButtonText}>Next 🚀</Text>
               </TouchableOpacity>
             </View>
@@ -159,58 +175,44 @@ export const AppTour = () => {
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.65)', // Darker overlay for better box pop-out
   },
   tourBox: {
     position: 'absolute',
     width: width - 40,
-    backgroundColor: '#1C1C1E', // iOS Dark elevated surface
-    borderRadius: 20,
     padding: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.45,
-    shadowRadius: 24,
-    elevation: 12,
     borderWidth: 1.5,
-    borderColor: '#0A84FF', // High visibility iOS Blue glowing border
   },
   hostContainer: {
     position: 'absolute',
     top: -30,
     left: 20,
-    backgroundColor: '#0A84FF',
     width: 60,
     height: 60,
     borderRadius: 30,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#0A84FF',
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.5,
+    shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 8,
-    borderWidth: 2,
-    borderColor: '#1C1C1E',
+    borderWidth: 3,
   },
   hostEmoji: {
     fontSize: 30,
   },
   title: {
-    color: '#FFFFFF', // True white for absolute visibility
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 8,
     marginTop: 12,
   },
   text: {
-    color: '#E5E5EA', // Off-white, extremely legible
     fontSize: 15,
     lineHeight: 22,
     marginBottom: 20,
   },
   questionText: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: '700',
     marginBottom: 16,
@@ -221,17 +223,14 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   optionButton: {
-    backgroundColor: '#2C2C2E', // Solid readable card surface
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.15)',
     paddingVertical: 14,
     paddingHorizontal: 16,
-    borderRadius: 12,
+    borderRadius: 20,
     alignItems: 'center',
     marginBottom: 4,
   },
   optionText: {
-    color: '#FFFFFF', // High contrast
     fontWeight: '700',
     fontSize: 15,
   },
@@ -243,20 +242,18 @@ const styles = StyleSheet.create({
     paddingTop: 10,
   },
   skipText: {
-    color: '#FF453A', // Clear bright red for skip button
     fontWeight: '700',
     fontSize: 15,
     padding: 8,
   },
   nextButton: {
-    backgroundColor: '#0A84FF',
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 12,
-    shadowColor: '#0A84FF',
+    borderRadius: 24,
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.2,
     shadowRadius: 8,
+    elevation: 4,
   },
   nextButtonText: {
     color: '#FFFFFF',

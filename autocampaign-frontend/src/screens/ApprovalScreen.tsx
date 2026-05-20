@@ -57,7 +57,7 @@ export const ApprovalScreen = () => {
     try {
       setLoading(true);
       setLoadingStatus("🚀 Agent 4: Dispatching bulk personalized campaign via Resend...");
-      const res = await approveCampaign(jobId, localBudget, strategy, leads, assets, userProfile?.business_name, userProfile?.brand_color);
+      const res = await approveCampaign(jobId, localBudget, strategy, leads, assets, userProfile?.business_name, userProfile?.brand_color, userProfile?.website_url);
       setExecutionResult(res);
       Alert.alert('🚀 Campaign Dispatched!', `Email sent to ${leads.length} customer lead${leads.length > 1 ? 's' : ''}!`);
       navigation.navigate('Outcome');
@@ -86,7 +86,7 @@ export const ApprovalScreen = () => {
 
         {/* Budget Card */}
         <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>CAMPAIGN BUDGET</Text>
-        <View style={[styles.budgetCard, T.card, T.shadow]}>
+        <View style={[styles.budgetCard, T.cardLg, T.shadow]}>
           <Text style={[styles.budgetValue, { color: T.primary }]}>PKR {localBudget.toLocaleString()}</Text>
           {/* Progress bar */}
           <View style={[styles.progressBg, { backgroundColor: T.surfaceCard }]}>
@@ -97,11 +97,19 @@ export const ApprovalScreen = () => {
             <Text style={[styles.rangeText, { color: T.textTertiary }]}>PKR 50,000</Text>
           </View>
           <View style={styles.sliderControls}>
-            <TouchableOpacity style={[styles.sliderBtn, { backgroundColor: T.surfaceCard, borderColor: T.border }]} onPress={handleDecreaseBudget}>
+            <TouchableOpacity 
+              style={[styles.sliderBtn, T.shadow, { backgroundColor: T.surface, borderColor: T.border }]} 
+              onPress={handleDecreaseBudget}
+              activeOpacity={0.7}
+            >
               <Ionicons name="remove" size={20} color={T.text} />
             </TouchableOpacity>
             <Text style={[styles.sliderLabel, { color: T.textSub }]}>Adjust Budget</Text>
-            <TouchableOpacity style={[styles.sliderBtn, { backgroundColor: T.surfaceCard, borderColor: T.border }]} onPress={handleIncreaseBudget}>
+            <TouchableOpacity 
+              style={[styles.sliderBtn, T.shadow, { backgroundColor: T.surface, borderColor: T.border }]} 
+              onPress={handleIncreaseBudget}
+              activeOpacity={0.7}
+            >
               <Ionicons name="add" size={20} color={T.text} />
             </TouchableOpacity>
           </View>
@@ -109,7 +117,7 @@ export const ApprovalScreen = () => {
 
         {/* Checks */}
         <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>EXECUTION CHECKS</Text>
-        <View style={[styles.checksCard, T.card, T.shadow]}>
+        <View style={[styles.checksCard, T.cardLg, T.shadow]}>
           {checks.map((c, i) => (
             <View key={i} style={[styles.checkRow, i < checks.length - 1 && { borderBottomWidth: 1, borderBottomColor: T.border }]}>
               <Text style={[styles.checkLabel, { color: T.text }]}>{c.label}</Text>
@@ -123,7 +131,7 @@ export const ApprovalScreen = () => {
 
         {/* Actions */}
         <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>ACTIONS TO EXECUTE</Text>
-        <View style={[styles.actionsCard, T.card, T.shadow]}>
+        <View style={[styles.actionsCard, T.cardLg, T.shadow]}>
           {strategy?.action_chain?.filter((a: any) => a.is_feasible).map((action: any, i: number) => (
             <View key={i} style={[styles.actionRow, i > 0 && { borderTopWidth: 1, borderTopColor: T.border }]}>
               <View style={[styles.actionDot, { backgroundColor: T.primary }]} />
@@ -134,12 +142,12 @@ export const ApprovalScreen = () => {
 
         {/* Dispatch Card */}
         <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>MARKETING DISPATCH SETUP</Text>
-        <View style={[styles.dispatchCard, T.card, T.shadow]}>
+        <View style={[styles.dispatchCard, T.cardLg, T.shadow]}>
           <Text style={[styles.dispatchSubLabel, { color: T.textSub }]}>
             Manual Entry <Text style={{ color: T.textTertiary }}>(comma-separated)</Text>
           </Text>
           <View style={[styles.emailInputRow, { backgroundColor: T.surfaceCard, borderColor: T.border }]}>
-            <Ionicons name="mail-outline" size={18} color={T.textSub} style={{ marginRight: 10 }} />
+            <Ionicons name="mail-outline" size={18} color={T.textSub} style={{ marginRight: 10, marginTop: 12 }} />
             <TextInput
               style={[styles.emailInput, { color: T.text }]}
               placeholder="lead1@gmail.com, lead2@yahoo.com"
@@ -155,7 +163,7 @@ export const ApprovalScreen = () => {
           <View style={[styles.divider, { backgroundColor: T.border }]} />
 
           <TouchableOpacity
-            style={[styles.csvBtn, { borderColor: `${T.primary}60`, backgroundColor: T.pillBg }]}
+            style={[styles.csvBtn, { borderColor: `${T.primary}30`, backgroundColor: T.pillBg }]}
             onPress={handlePickCSV}
             activeOpacity={0.7}
           >
@@ -166,7 +174,7 @@ export const ApprovalScreen = () => {
           </TouchableOpacity>
 
           {combinedLeads.length > 0 && (
-            <View style={[styles.leadsBadge, { backgroundColor: `${T.success}18`, borderColor: `${T.success}30` }]}>
+            <View style={[styles.leadsBadge, { backgroundColor: `${T.success}12`, borderColor: `${T.success}30` }]}>
               <Ionicons name="people" size={16} color={T.success} />
               <Text style={[styles.leadsText, { color: T.success }]}>
                 {combinedLeads.length} Leads Ready for Dispatch
@@ -206,56 +214,55 @@ const styles = StyleSheet.create({
 
   title:      { fontSize: 30, fontWeight: '800', letterSpacing: 0.2, marginBottom: 4 },
   subtitle:   { fontSize: 15, marginBottom: 22 },
-  sectionLabel:{ fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10 },
+  sectionLabel:{ fontSize: 11, fontWeight: '700', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 10, marginTop: 4 },
 
-  budgetCard: { padding: 20, alignItems: 'center', marginBottom: 24 },
+  budgetCard: { padding: 24, alignItems: 'center', marginBottom: 24, borderWidth: 0 },
   budgetValue:{ fontSize: 38, fontWeight: '800', marginBottom: 16 },
-  progressBg: { width: '100%', height: 6, borderRadius: 3, marginBottom: 6, overflow: 'hidden' },
-  progressFill:{ height: '100%', borderRadius: 3 },
+  progressBg: { width: '100%', height: 8, borderRadius: 99, marginBottom: 6, overflow: 'hidden' },
+  progressFill:{ height: '100%', borderRadius: 99 },
   budgetRange:{ flexDirection: 'row', justifyContent: 'space-between', width: '100%', marginBottom: 18 },
   rangeText:  { fontSize: 11 },
   sliderControls:{ flexDirection: 'row', alignItems: 'center', gap: 20 },
-  sliderBtn:  { width: 42, height: 42, borderRadius: 13, justifyContent: 'center', alignItems: 'center', borderWidth: 1 },
-  sliderLabel:{ fontSize: 14 },
+  sliderBtn:  { width: 48, height: 48, borderRadius: 24, justifyContent: 'center', alignItems: 'center', borderWidth: 1 },
+  sliderLabel:{ fontSize: 14, fontWeight: '600' },
 
-  checksCard: { marginBottom: 24, overflow: 'hidden' },
-  checkRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 16 },
-  checkLabel: { fontSize: 15 },
+  checksCard: { marginBottom: 24, overflow: 'hidden', borderWidth: 0 },
+  checkRow:   { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 18 },
+  checkLabel: { fontSize: 15, fontWeight: '600' },
   checkBadge: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  checkOk:    { fontSize: 13, fontWeight: '600' },
+  checkOk:    { fontSize: 13, fontWeight: '700' },
 
-  actionsCard:{ marginBottom: 24, overflow: 'hidden' },
-  actionRow:  { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 14 },
+  actionsCard:{ marginBottom: 24, overflow: 'hidden', borderWidth: 0 },
+  actionRow:  { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 16 },
   actionDot:  { width: 8, height: 8, borderRadius: 4 },
-  actionText: { fontSize: 15 },
+  actionText: { fontSize: 15, fontWeight: '600' },
 
-  dispatchCard:    { padding: 18, marginBottom: 24 },
-  dispatchSubLabel:{ fontSize: 13, fontWeight: '600', marginBottom: 10 },
+  dispatchCard:    { padding: 24, marginBottom: 24, borderWidth: 0 },
+  dispatchSubLabel:{ fontSize: 13, fontWeight: '700', marginBottom: 10 },
   emailInputRow:   {
-    flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 14,
-    paddingVertical: 10, borderRadius: 12, borderWidth: 1, marginBottom: 4,
+    flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 16,
+    paddingVertical: 12, borderRadius: 24, borderWidth: 1, marginBottom: 4,
   },
-  emailInput:      { flex: 1, fontSize: 14, minHeight: 44 },
-  divider:         { height: 1, marginVertical: 14 },
+  emailInput:      { flex: 1, fontSize: 14, minHeight: 48 },
+  divider:         { height: 1, marginVertical: 16 },
   csvBtn:          {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 10, borderWidth: 1, borderRadius: 12, paddingVertical: 14, marginBottom: 12,
+    gap: 10, borderWidth: 1, borderRadius: 24, paddingVertical: 14, marginBottom: 12,
   },
   csvBtnText:      { fontWeight: '700', fontSize: 14 },
-  leadsbadge:      {},
   leadsText:       { fontSize: 14, fontWeight: '700' },
   leadsBadge:      {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-    gap: 8, borderRadius: 12, paddingVertical: 10, borderWidth: 1,
+    gap: 8, borderRadius: 24, paddingVertical: 12, borderWidth: 1,
   },
 
   approveBtn:  {
-    paddingVertical: 18, borderRadius: 18,
+    height: 58, borderRadius: 32,
     flexDirection: 'row', justifyContent: 'center', alignItems: 'center', gap: 8,
     marginBottom: 12,
     shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.28, shadowRadius: 14, elevation: 7,
   },
   approveBtnText:{ color: '#fff', fontSize: 17, fontWeight: '700' },
   modifyBtn:     { padding: 16, alignItems: 'center' },
-  modifyBtnText: { fontSize: 15, fontWeight: '500' },
+  modifyBtnText: { fontSize: 15, fontWeight: '600' },
 });
