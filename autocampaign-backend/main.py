@@ -130,8 +130,9 @@ async def register_user(request: UserRegisterRequest):
     email = request.email.strip().lower()
     
     if email in users:
-        raise HTTPException(status_code=400, detail="User with this email already exists")
+        raise HTTPException(status_code=409, detail=f"An account with {email} already exists. Please sign in instead.")
     
+
     # Pre-normalize website_url to ensure it has a proper scheme (defaulting to https://)
     website_url = request.website_url.strip() if request.website_url else ""
     if website_url and not (website_url.startswith("http://") or website_url.startswith("https://")):
@@ -680,6 +681,138 @@ PAKISTANI_BRANDS_DATABASE = {
             "mega.pk": "Mega Laptop Sale: Complimentary Laptop Bag with Intel Core i7"
         }
     },
+    "automotive": {
+        "brands": ["Toyota IMC", "Honda Atlas Cars", "Suzuki Pakistan", "Hyundai Nishat", "Kia Lucky Motors", "Changan Pakistan", "MG Motors Pakistan", "DFSK Pakistan"],
+        "colors": {
+            "toyota imc": "#EB0A1E", "honda atlas cars": "#CC0000", "suzuki pakistan": "#004B8D",
+            "hyundai nishat": "#002C5F", "kia lucky motors": "#BB162B", "changan pakistan": "#C8102E",
+            "mg motors pakistan": "#1D1D1B", "dfsk pakistan": "#00529B"
+        },
+        "deals": {
+            "toyota imc": "Corolla Grande: Free 3-Year Extended Warranty + Free Registration!",
+            "honda atlas cars": "Civic Oriel: 0% Down Payment Finance via Bank Al-Habib for 5 Years",
+            "suzuki pakistan": "Alto VXR: Special Pre-Booking Price — Save Rs. 50,000 vs Showroom!",
+            "hyundai nishat": "Tucson Ultimate: Complimentary 3-Year Service Package Included",
+            "kia lucky motors": "Sportage AWD: Free Sunroof + Leather Seat Upgrade on Bookings This Month",
+            "changan pakistan": "Alsvin Lumiere: Rs. 300,000 Off on Showroom Price — Limited Units!",
+            "mg motors pakistan": "MG HS Essence: Free Panoramic Sunroof + 7-Year Warranty!",
+            "dfsk pakistan": "Glory 500: Rs. 200,000 Off + Free First Service Package"
+        }
+    },
+    "health_fitness": {
+        "brands": ["GNC Pakistan", "Shredded PK", "Nutrifactor", "Herbion Pakistan", "Osi Sports", "Fitflex"],
+        "colors": {
+            "gnc pakistan": "#FFC107", "shredded pk": "#E53935", "nutrifactor": "#2E7D32",
+            "herbion pakistan": "#1B5E20", "osi sports": "#0D47A1", "fitflex": "#FF5722"
+        },
+        "deals": {
+            "gnc pakistan": "GNC Whey Protein Stack: Buy 2 Get 1 FREE this week!",
+            "shredded pk": "Pre-Workout + Creatine Combo: Flat 20% OFF",
+            "nutrifactor": "Vitamin C + Zinc Immunity Bundle: Rs. 999 Only",
+            "herbion pakistan": "Herbion Naturals Supplement Range: Flat 15% OFF",
+            "osi sports": "Premium Gym Equipment: EMI available at 0% markup",
+            "fitflex": "Monthly Membership with Free Personal Training Session"
+        }
+    },
+    "home_furniture": {
+        "brands": ["Interwood", "Habitt", "HOME", "Gul Ahmed Home", "Dawlance", "Haier Pakistan"],
+        "colors": {
+            "interwood": "#3E2723", "habitt": "#BF360C", "home": "#4E342E",
+            "gul ahmed home": "#0D47A1", "dawlance": "#D50000", "haier pakistan": "#1A237E"
+        },
+        "deals": {
+            "interwood": "Interwood Bedroom Set: Up to 25% OFF on Complete Furniture Suites!",
+            "habitt": "Habitt Home Décor Clearance: Flat 30% OFF on All Living Room Items",
+            "home": "HOME Summer Collection: Flat 20% OFF on Curtains & Soft Furnishings",
+            "gul ahmed home": "Gul Ahmed Bedsheet & Towel Combo: Buy 2 Sets Get 1 Free",
+            "dawlance": "Dawlance Inverter AC: 0% Down + Free Installation This Month",
+            "haier pakistan": "Haier Smart Home Package: TV + Fridge + Washing Machine Bundle"
+        }
+    },
+    "grocery": {
+        "brands": ["Imtiaz Super Market", "Carrefour Pakistan", "HKB", "Chase Value", "Metro Cash & Carry"],
+        "colors": {
+            "imtiaz super market": "#E53935", "carrefour pakistan": "#1565C0",
+            "hkb": "#D84315", "chase value": "#2E7D32", "metro cash & carry": "#C62828"
+        },
+        "deals": {
+            "imtiaz super market": "Imtiaz Weekend Sale: Flat 20% OFF on Fresh Produce & Bakery!",
+            "carrefour pakistan": "Carrefour Price Lock: Guaranteed Lowest Grocery Prices This Week",
+            "hkb": "HKB Eid Grocery Pack: Bundle Offer Save Rs. 500 on Rs. 5000 Bill",
+            "chase value": "Chase Value Monthly Savers: Flat 15% OFF on All Dairy Products",
+            "metro cash & carry": "Metro B2B Bulk Buy: Extra 10% OFF for Business Cardholders"
+        }
+    },
+    "real_estate": {
+        "brands": ["Zameen.com", "Bahria Town", "DHA Pakistan", "Park View City", "Graana.com"],
+        "colors": {
+            "zameen.com": "#E53935", "bahria town": "#1565C0", "dha pakistan": "#1B5E20",
+            "park view city": "#4A148C", "graana.com": "#E65100"
+        },
+        "deals": {
+            "zameen.com": "Zameen Expo 2025: 0% Commission on Featured Projects!",
+            "bahria town": "Bahria Town New Sector Launch: Pre-Booking at 20% Below Market Rate",
+            "dha pakistan": "DHA Residential Plots: Special Instalment Plans Over 5 Years",
+            "park view city": "Park View Villas: Free Car Parking + Free Utilities for 2 Years",
+            "graana.com": "Graana Verified Listings: Free Legal Consultation with Every Deal"
+        }
+    },
+    "jewelry": {
+        "brands": ["PC Jewellers", "Tiffany & Co Pakistan", "Sakura Jewels", "Gold Souk Pakistan", "Sarafa Bazaar"],
+        "colors": {
+            "pc jewellers": "#F9A825", "tiffany & co pakistan": "#00B0B9",
+            "sakura jewels": "#AD1457", "gold souk pakistan": "#F57F17", "sarafa bazaar": "#6D4C41"
+        },
+        "deals": {
+            "pc jewellers": "PC Diamond Collection: Free Ring Box + Polishing on any Gold Purchase!",
+            "tiffany & co pakistan": "Tiffany Sterling Silver: Complimentary Engraving on Couple Sets",
+            "sakura jewels": "Sakura Bridal Set: Up to 30% OFF on Complete Necklace Suites",
+            "gold souk pakistan": "Gold Souk Seasonal Sale: Free Making Charges on All Bangles",
+            "sarafa bazaar": "Sarafa Wholesale Rate: Best Gold Price Guaranteed in Pakistan"
+        }
+    },
+    "travel": {
+        "brands": ["Airblue", "PIA (Pakistan Airlines)", "Airlink", "Waada Travel", "Al-Meezan Hajj Tours"],
+        "colors": {
+            "airblue": "#003087", "pia (pakistan airlines)": "#006747", "airlink": "#E53935",
+            "waada travel": "#FF8F00", "al-meezan hajj tours": "#2E7D32"
+        },
+        "deals": {
+            "airblue": "Airblue Flash Seats: Karachi-Lahore from Rs. 8,999 — Book Now!",
+            "pia (pakistan airlines)": "PIA Summer Package: Dubai Return Tickets from Rs. 55,000!",
+            "airlink": "Airlink Domestic Pass: Fly 4 Routes for the Price of 2",
+            "waada travel": "Waada Honeymoon Package: Turkey 7N/8D from Rs. 1,10,000/couple",
+            "al-meezan hajj tours": "Economy Umrah Package: Rs. 1,85,000 All-Inclusive — 2025 Season"
+        }
+    },
+    "education": {
+        "brands": ["Coursera Pakistan", "Sabaq Foundation", "Iqra University", "City School Network", "Preply Pakistan"],
+        "colors": {
+            "coursera pakistan": "#0056D2", "sabaq foundation": "#E53935",
+            "iqra university": "#1B5E20", "city school network": "#880E4F", "preply pakistan": "#311B92"
+        },
+        "deals": {
+            "coursera pakistan": "Coursera Plus Annual: 7-Day Free Trial + 50% OFF First Month!",
+            "sabaq foundation": "Sabaq Free Matric & Inter Video Lectures — 100% Free Always",
+            "iqra university": "Iqra Spring Semester Admission: Merit Scholarship up to 50%",
+            "city school network": "City School Early Registration: Flat Rs. 5,000 Discount on Fees",
+            "preply pakistan": "Preply English Tutor: First Lesson Free with Top-Rated Tutors"
+        }
+    },
+    "digital": {
+        "brands": ["Systems Limited", "NetSol Technologies", "Gaditek", "Arbisoft", "10Pearls"],
+        "colors": {
+            "systems limited": "#0D47A1", "netsol technologies": "#1B5E20",
+            "gaditek": "#E53935", "arbisoft": "#FF6F00", "10pearls": "#6A1B9A"
+        },
+        "deals": {
+            "systems limited": "Systems Ltd SAP Rollout Package: Free 3-Month Post-Go-Live Support",
+            "netsol technologies": "NetSol LeaseSoft: Free POC Setup + 30-Day Pilot at No Cost",
+            "gaditek": "Gaditek Digital Marketing Retainer: 2 Months Free on 12-Month Contract",
+            "arbisoft": "Arbisoft MVP Development: First Sprint Free for Startups",
+            "10pearls": "10Pearls Product Design Sprint: Free UX Audit for New Clients"
+        }
+    },
     "generic": {
         "brands": ["Daraz", "Telemart", "Yayvo", "Shoppingbag.pk"],
         "colors": {"daraz": "#FF5722", "telemart": "#0D47A1", "yayvo": "#AD1457", "shoppingbag.pk": "#0E2F56"},
@@ -702,96 +835,106 @@ def resolve_competitors_locally(business_name: str, business_type: str, products
     category = "generic"
     sub_niche = None
     
-    food_keywords = [
-        "pizza", "burger", "fast food", "chicken", "biryani", "karahi", "kabab", "tikka", 
-        "sajji", "gelato", "ice cream", "dessert", "sweets", "bakery", "bakes", "cafe", 
-        "coffee", "tea", "chai", "diner", "cuisine", "grill", "restaurant", "diner", 
-        "waffle", "kebab", "roll", "shack", "bites", "swirl", "food", "kitchen", "cafe", 
-        "dhaba", "canteen", "culinary", "dine-in", "takeaway"
+    # ── Category keyword maps (ordered by specificity — automotive FIRST to avoid false matches) ──
+    CATEGORY_KEYWORDS = [
+        (
+            "automotive",
+            ["car", "cars", "automobile", "automotive", "motors", "motor", "vehicle", "vehicles",
+             "toyota", "honda", "suzuki", "hyundai", "kia", "changan", "mg", "dfsk", "nissan",
+             "sedan", "suv", "hatchback", "crossover", "electric vehicle", "ev", "petrol",
+             "showroom", "dealership", "auto"]
+        ),
+        (
+            "health_fitness",
+            ["gym", "fitness", "protein", "supplement", "workout", "yoga", "sport", "activewear",
+             "nutrition", "vitamin", "health", "wellness", "whey", "creatine", "preworkout"]
+        ),
+        (
+            "home_furniture",
+            ["furniture", "sofa", "bed", "mattress", "curtain", "rug", "carpet", "lamp",
+             "home decor", "decor", "interior", "kitchen appliance", "refrigerator",
+             "washing machine", "air conditioner", "interwood", "habitt"]
+        ),
+        (
+            "grocery",
+            ["grocery", "supermarket", "superstore", "imtiaz", "carrefour", "metro",
+             "fresh produce", "dairy", "vegetables", "bakery items", "snacks", "household"]
+        ),
+        (
+            "real_estate",
+            ["property", "real estate", "plot", "plots", "apartment", "flat", "house",
+             "villa", "zameen", "bahria", "dha", "housing scheme", "construction"]
+        ),
+        (
+            "jewelry",
+            ["gold", "silver", "diamond", "jewelry", "jewellery", "jewel", "ring",
+             "necklace", "bracelet", "bangle", "wedding set", "bridal jewelry", "sarafa"]
+        ),
+        (
+            "travel",
+            ["travel", "tourism", "airline", "flight", "hotel", "tour", "hajj", "umrah",
+             "visa", "booking", "airblue", "pia", "package", "holiday", "cruise"]
+        ),
+        (
+            "education",
+            ["school", "university", "college", "academy", "tutor", "course", "learning",
+             "training", "coaching", "online course", "exam prep", "certification"]
+        ),
+        (
+            "digital",
+            ["software", "app", "saas", "digital marketing", "web dev", "web development",
+             "mobile app", "it services", "cloud", "cybersecurity", "seo", "agency"]
+        ),
+        (
+            "food",
+            ["pizza", "burger", "fast food", "chicken", "biryani", "karahi", "kabab", "tikka",
+             "sajji", "gelato", "ice cream", "dessert", "sweets", "bakery", "cafe",
+             "coffee", "tea", "chai", "diner", "cuisine", "grill", "restaurant",
+             "waffle", "kebab", "food", "kitchen", "dhaba", "canteen", "takeaway"]
+        ),
+        (
+            "footwear",
+            ["footwear", "shoes", "sandals", "slippers", "chappal", "sole", "heels",
+             "boots", "sneakers", "stylo", "ecs", "borjan", "bata", "servis", "insignia"]
+        ),
+        (
+            "fashion",
+            ["lawn", "embroidered", "kurti", "kurta", "clothing", "fashion", "apparel",
+             "fabric", "pret", "suit", "shirt", "jeans", "boutique", "alkaram", "khaadi",
+             "limelight", "ethnic", "outfitters", "sana safinaz", "unstitched", "textile"]
+        ),
+        (
+            "beauty",
+            ["cosmetics", "beauty", "skincare", "makeup", "herbal", "perfume",
+             "fragrance", "salon", "spa", "serum", "lipstick", "lotion", "shampoo", "organic"]
+        ),
+        (
+            "electronics",
+            ["electronics", "gadget", "mobiles", "computers", "laptops", "phones",
+             "devices", "camera", "earphones", "smartwatch", "ishopping"]
+        ),
     ]
-    
-    fashion_keywords = [
-        "lawn", "embroidered", "kurti", "kurta", "clothing", "fashion", "apparel", "wear", 
-        "fabric", "pret", "studio", "suit", "shirt", "jeans", "boutique", "brand", "sapphire", 
-        "khaadi", "alkaram", "limelight", "ethnic", "outfitters", "j.", "bonanza", "satrangi", 
-        "sana safinaz", "nishat", "gulahmed", "ideas", "unstitched", "pret", "textile"
-    ]
-    
-    footwear_keywords = [
-        "footwear", "shoes", "sandals", "slippers", "chappal", "sole", "heels", "boots", 
-        "sneakers", "stylo", "ecs", "borjan", "bata", "servis", "insignia"
-    ]
-    
-    beauty_keywords = [
-        "cosmetics", "beauty", "skincare", "makeup", "herbal", "ghani", "hemani", "perfume", 
-        "fragrance", "salon", "spa", "rose water", "aloe vera", "cream", "serum", "oil", 
-        "lipstick", "lotion", "shampoo", "organic"
-    ]
-    
-    electronics_keywords = [
-        "electronics", "tech", "gadget", "mobiles", "computers", "laptops", "phones", 
-        "devices", "accessories", "camera", "ishopping", "telemart", "daraz"
-    ]
-    
-    is_food = False
-    is_fashion = False
-    is_footwear = False
-    is_beauty = False
-    is_electronics = False
-    
-    for kw in food_keywords:
-        if kw in name_lower or kw in type_lower or any(kw in p for p in prod_list):
-            is_food = True
-            break
-            
-    if not is_food:
-        for kw in footwear_keywords:
-            if kw in name_lower or kw in type_lower or any(kw in p for p in prod_list):
-                is_footwear = True
-                break
-                
-    if not is_food and not is_footwear:
-        for kw in fashion_keywords:
-            if kw in name_lower or kw in type_lower or any(kw in p for p in prod_list):
-                is_fashion = True
-                break
-                
-    if not is_food and not is_footwear and not is_fashion:
-        for kw in beauty_keywords:
-            if kw in name_lower or kw in type_lower or any(kw in p for p in prod_list):
-                is_beauty = True
-                break
-                
-    if not is_food and not is_footwear and not is_fashion and not is_beauty:
-        for kw in electronics_keywords:
-            if kw in name_lower or kw in type_lower or any(kw in p for p in prod_list):
-                is_electronics = True
-                break
 
-    if is_food:
-        category = "food"
+    # Match category — first match wins
+    for cat_name, keywords in CATEGORY_KEYWORDS:
+        if any(kw in name_lower or kw in type_lower or any(kw in p for p in prod_list) for kw in keywords):
+            category = cat_name
+            break
+
+    # Sub-niche for food only
+    if category == "food":
         if "pizza" in name_lower or any("pizza" in p for p in prod_list):
             sub_niche = "pizza"
         elif any(x in name_lower for x in ["burger", "kfc", "mcdonald", "hardee", "lab"]) or any(x in p for p in prod_list for x in ["burger", "fries"]):
             sub_niche = "burger"
         elif any(x in name_lower for x in ["gelato", "ice cream", "cream", "sweets", "swirl", "chocolate", "dessert", "chaman", "sorbet"]) or any(x in p for p in prod_list for x in ["gelato", "ice cream", "cone", "cup", "scoop"]):
             sub_niche = "dessert"
-        elif any(x in name_lower for x in ["cafe", "coffee", "espresso", "latte", "cappuccino", "brew", "jeans"]) or any(x in p for p in prod_list for x in ["coffee", "latte"]):
+        elif any(x in name_lower for x in ["cafe", "coffee", "espresso", "latte", "cappuccino", "brew"]) or any(x in p for p in prod_list for x in ["coffee", "latte"]):
             sub_niche = "cafe"
         elif any(x in name_lower for x in ["kabab", "karahi", "kolachi", "qila", "bbq", "barbecue", "grill", "tikka", "platter", "buffet", "salt"]) or any(x in p for p in prod_list for x in ["karahi", "tikka", "kabab", "biryani"]):
             sub_niche = "desi"
         else:
             sub_niche = "generic"
-    elif is_footwear:
-        category = "footwear"
-    elif is_fashion:
-        category = "fashion"
-    elif is_beauty:
-        category = "beauty"
-    elif is_electronics:
-        category = "electronics"
-    else:
-        category = "generic"
 
     if category == "food" and sub_niche:
         candidates = list(PAKISTANI_BRANDS_DATABASE["food"][sub_niche]["brands"])
@@ -825,6 +968,15 @@ def resolve_competitors_locally(business_name: str, business_type: str, products
             "footwear": ["Stylo", "ECS", "Borjan", "Bata"],
             "beauty": ["Saeed Ghani", "J. Cosmetics", "Hemani", "Conatural"],
             "electronics": ["Daraz", "Telemart", "iShopping.pk"],
+            "automotive": ["Toyota IMC", "Honda Atlas Cars", "Suzuki Pakistan", "Hyundai Nishat", "Kia Lucky Motors"],
+            "health_fitness": ["GNC Pakistan", "Nutrifactor", "Shredded PK", "Herbion Pakistan"],
+            "home_furniture": ["Interwood", "Habitt", "Dawlance", "Haier Pakistan"],
+            "grocery": ["Imtiaz Super Market", "Carrefour Pakistan", "Metro Cash & Carry"],
+            "real_estate": ["Zameen.com", "Bahria Town", "DHA Pakistan"],
+            "jewelry": ["PC Jewellers", "Gold Souk Pakistan", "Sakura Jewels"],
+            "travel": ["Airblue", "PIA (Pakistan Airlines)", "Waada Travel"],
+            "education": ["Coursera Pakistan", "Sabaq Foundation", "Iqra University"],
+            "digital": ["Systems Limited", "NetSol Technologies", "Gaditek"],
             "generic": ["Daraz", "Telemart", "Yayvo", "Shoppingbag.pk"]
         }
         for fb in extra_fallbacks.get(category, extra_fallbacks["generic"]):
@@ -836,57 +988,39 @@ def resolve_competitors_locally(business_name: str, business_type: str, products
     comp_a = clean_candidates[0]
     comp_b = clean_candidates[1]
     
-    # Resolve Color
+    # Resolve Color — merged known brand colors
     KNOWN_COLORS = {
-        "alkaram": "#6B2737",
-        "sapphire": "#2A2A72",
-        "khaadi": "#8C1D40",
-        "limelight": "#2E7D32",
-        "gul ahmed": "#0D47A1",
-        "ideas": "#0D47A1",
-        "sana safinaz": "#880E4F",
-        "ethnic": "#6B2737",
-        "outfitters": "#2C3E50",
-        "j.": "#1C1C1C",
-        "junaid jamshed": "#1C1C1C",
-        "bonanza": "#AD1457",
-        "satrangi": "#AD1457",
-        "stylo": "#E91E63",
-        "ecs": "#4A148C",
-        "borjan": "#795548",
-        "bata": "#D50000",
-        "servis": "#0D47A1",
-        "insignia": "#D4AF37",
-        "kababjees": "#A32C2C",
-        "kolachi": "#2C3E50",
-        "lal qila": "#8B0000",
-        "bar.b.q tonight": "#1C2833",
-        "salt'n pepper": "#D35400",
-        "broadway": "#C0392B",
-        "domino": "#006491",
-        "pizza hut": "#E4002B",
-        "14th street": "#F2A900",
-        "kfc": "#E4002B",
-        "mcdonald": "#FFC72C",
-        "burger lab": "#000000",
-        "burger o": "#D35400",
-        "hardee": "#FFC72C",
-        "soft swirl": "#FF69B4",
-        "alpine gelato": "#5D8AA8",
-        "chaman": "#FF8C00",
-        "lal's": "#4A2711",
-        "baskin": "#FF69B4",
-        "gloria jean": "#4E3629",
-        "espresso": "#1C1C1C",
-        "second cup": "#800000",
-        "butlers": "#D4AF37",
-        "saeed ghani": "#2E7D32",
-        "hemani": "#1B5E20",
-        "conatural": "#E91E63",
-        "daraz": "#FF5722",
-        "telemart": "#0D47A1",
+        # Fashion
+        "alkaram": "#6B2737", "sapphire": "#2A2A72", "khaadi": "#8C1D40",
+        "limelight": "#2E7D32", "gul ahmed": "#0D47A1", "ideas": "#0D47A1",
+        "sana safinaz": "#880E4F", "ethnic": "#6B2737", "outfitters": "#2C3E50",
+        "j.": "#1C1C1C", "junaid jamshed": "#1C1C1C", "bonanza": "#AD1457", "satrangi": "#AD1457",
+        # Footwear
+        "stylo": "#E91E63", "ecs": "#4A148C", "borjan": "#795548",
+        "bata": "#D50000", "servis": "#0D47A1", "insignia": "#D4AF37",
+        # Food
+        "kababjees": "#A32C2C", "kolachi": "#2C3E50", "lal qila": "#8B0000",
+        "bar.b.q tonight": "#1C2833", "salt'n pepper": "#D35400",
+        "broadway": "#C0392B", "domino": "#006491", "pizza hut": "#E4002B",
+        "14th street": "#F2A900", "kfc": "#E4002B", "mcdonald": "#FFC72C",
+        "burger lab": "#000000", "burger o": "#D35400", "hardee": "#FFC72C",
+        "soft swirl": "#FF69B4", "alpine gelato": "#5D8AA8", "chaman": "#FF8C00",
+        "lal's": "#4A2711", "baskin": "#FF69B4", "gloria jean": "#4E3629",
+        "espresso": "#1C1C1C", "second cup": "#800000", "butlers": "#D4AF37",
+        # Beauty
+        "saeed ghani": "#2E7D32", "hemani": "#1B5E20", "conatural": "#E91E63",
+        # Electronics / eComm
+        "daraz": "#FF5722", "telemart": "#0D47A1",
+        # Automotive
+        "toyota": "#EB0A1E", "honda": "#CC0000", "suzuki": "#004B8D",
+        "hyundai": "#002C5F", "kia": "#BB162B", "changan": "#C8102E",
+        "mg motors": "#1D1D1B", "dfsk": "#00529B",
+        # Real estate
+        "zameen": "#E53935", "bahria": "#1565C0", "dha": "#1B5E20",
+        # Grocery
+        "imtiaz": "#E53935", "carrefour": "#1565C0", "metro": "#C62828",
     }
-    
+
     brand_color = None
     for brand_key, hex_code in KNOWN_COLORS.items():
         if brand_key in name_lower:
@@ -899,24 +1033,52 @@ def resolve_competitors_locally(business_name: str, business_type: str, products
             "footwear": "#E91E63",
             "beauty": "#2E7D32",
             "electronics": "#FF5722",
+            "automotive": "#1D1D1B",
+            "health_fitness": "#E53935",
+            "home_furniture": "#3E2723",
+            "grocery": "#E53935",
+            "real_estate": "#1565C0",
+            "jewelry": "#F9A825",
+            "travel": "#003087",
+            "education": "#0056D2",
+            "digital": "#0D47A1",
             "generic": "#0A84FF"
         }
         brand_color = default_colors.get(category, "#0A84FF")
 
     def get_brand_deal(brand_name):
         b_norm = brand_name.lower().strip()
+        # Food has nested sub-niches
         if category == "food":
             for sn in PAKISTANI_BRANDS_DATABASE["food"]:
-                deals_dict = PAKISTANI_BRANDS_DATABASE["food"][sn]["deals"]
+                deals_dict = PAKISTANI_BRANDS_DATABASE["food"][sn].get("deals", {})
                 for bk, deal in deals_dict.items():
                     if bk in b_norm or b_norm in bk:
                         return deal
         else:
-            deals_dict = PAKISTANI_BRANDS_DATABASE[category]["deals"]
+            cat_data = PAKISTANI_BRANDS_DATABASE.get(category, {})
+            deals_dict = cat_data.get("deals", {})
             for bk, deal in deals_dict.items():
                 if bk in b_norm or b_norm in bk:
                     return deal
-        return f"Exclusive Promo: Flat 20% OFF on all hot items at {brand_name}!"
+        # Smart default — no lazy discounts
+        CATEGORY_DEAL_DEFAULTS = {
+            "automotive": f"{brand_name}: New Model Launch — Book Now & Get Free 3-Year Extended Warranty!",
+            "health_fitness": f"{brand_name}: New Supplement Stack — Free Shaker Bottle with First Order!",
+            "home_furniture": f"{brand_name}: Home Makeover Sale — Free Installation & Delivery on Orders Above Rs. 50,000",
+            "grocery": f"{brand_name}: Weekend Fresh Deal — Complimentary Free Home Delivery on Orders Above Rs. 3,000",
+            "real_estate": f"{brand_name}: New Project Launch — 0% Agent Commission + Free Legal Consultation",
+            "jewelry": f"{brand_name}: Bridal Season Special — Free Making Charges on All Gold Purchases!",
+            "travel": f"{brand_name}: Exclusive Tour Package — Free Travel Insurance with Every International Booking",
+            "education": f"{brand_name}: Semester Enrollment — Merit-Based Scholarship Up to 50% on Fees",
+            "digital": f"{brand_name}: New Client Offer — Free Audit + First Sprint at No Cost",
+            "fashion": f"{brand_name}: New Collection Launch — Free Dupatta with Every Unstitched Suit Purchase",
+            "footwear": f"{brand_name}: New Season Arrivals — Free Premium Care Kit with Every Pair",
+            "beauty": f"{brand_name}: Skincare Bundle — Free Travel-Sized Serum with Orders Above Rs. 2,500",
+            "electronics": f"{brand_name}: Tech Bundle Deal — Free Premium Accessories with Every Device Purchase",
+        }
+        return CATEGORY_DEAL_DEFAULTS.get(category, f"{brand_name}: Exclusive Limited-Time Value Bundle — Premium Quality, Unbeatable Value!")
+
 
     deal_a = get_brand_deal(comp_a)
     deal_b = get_brand_deal(comp_b)
@@ -995,6 +1157,43 @@ def generate_competitor_impact(category: str, competitor_name: str) -> str:
             f"Massive transaction surge on e-commerce platforms due to {competitor_name} bank discount partnership.",
             f"High search volume and buyer interest in {competitor_name} premium product range."
         ],
+        "automotive": [
+            f"Surge in showroom walk-ins as {competitor_name} launches a new limited-edition variant with free 3-year warranty.",
+            f"High pre-booking demand for {competitor_name}'s latest SUV/sedan driven by 0% bank financing campaigns.",
+            f"{competitor_name} digital ads dominating automotive search traffic across Karachi, Lahore & Islamabad."
+        ],
+        "health_fitness": [
+            f"Strong social media traction for {competitor_name} fuelled by fitness influencer supplement reviews.",
+            f"Rising online supplement orders from {competitor_name} due to aggressive bundle pricing campaigns."
+        ],
+        "home_furniture": [
+            f"High footfall at {competitor_name} flagship stores driven by summer home makeover promotions.",
+            f"Strong online orders for {competitor_name} home appliance bundles on bank EMI installment deals."
+        ],
+        "grocery": [
+            f"Strong weekend shoppers shifting to {competitor_name} due to weekly fresh produce discount deals.",
+            f"Rising basket sizes at {competitor_name} driven by bulk-buy and loyalty card promotions."
+        ],
+        "real_estate": [
+            f"High inquiry volumes for {competitor_name} projects driven by 0% commission launch campaigns.",
+            f"Rising digital leads for {competitor_name} residential projects via targeted social media ads."
+        ],
+        "jewelry": [
+            f"Strong bridal season footfall at {competitor_name} driven by complimentary making-charge offers.",
+            f"High social media engagement for {competitor_name} gold collection driven by wedding season campaigns."
+        ],
+        "travel": [
+            f"Surge in flight bookings via {competitor_name} driven by flash-seat limited-time fare promotions.",
+            f"Growing package tour bookings from {competitor_name} due to Umrah/holiday bundle deals."
+        ],
+        "education": [
+            f"Strong course enrollment growth at {competitor_name} driven by scholarship and free-trial campaigns.",
+            f"Rising student registrations for {competitor_name} programs due to peer referral incentives."
+        ],
+        "digital": [
+            f"Increasing project wins by {competitor_name} driven by first-sprint-free and free-audit campaigns.",
+            f"Growing retainer clients for {competitor_name} due to outcome-based pricing model promotions."
+        ],
         "generic": [
             f"Significant shift in consumer footfall as {competitor_name} rolls out flat flash discount offers.",
             f"Growing digital market share due to {competitor_name} nationwide free shipping campaigns."
@@ -1006,16 +1205,109 @@ def generate_competitor_impact(category: str, competitor_name: str) -> str:
     return options[idx]
 
 
-def generate_counter_insight(business_name: str, category: str, comp_a: str, comp_b: str) -> str:
-    insights = {
-        "food": f"Direct competitors {comp_a} and {comp_b} are locking in loyal dining customers via high-frequency bundle discounts in premium areas. To defend {business_name}'s market share, instantly deploy a targeted weekend meal platter discount (e.g. 15% OFF) or a free appetizer deal. Pair this with micro-targeted social media ads focusing on your signature taste, quality, and quick service to re-divert footfall.",
-        "fashion": f"Your local fashion competitors {comp_a} and {comp_b} are aggressively pulling footfall with flat seasonal discounts (up to 50% OFF) on unstitched and ready-to-wear lines. {business_name} must counter with a highly curated 'Buy 2 Get 1 FREE' bundle promotion on kurtas/kurtis or a flat 20% launch discount. Boost conversions using premium aesthetics on Instagram/TikTok emphasizing limited-time fabric quality.",
-        "footwear": f"With {comp_a} and {comp_b} drawing high-volume footfall through footwear clearance deals, {business_name} must act immediately. Launch a mid-season footwear promo (e.g. flat Rs. 1000 off or 20% OFF) highlighting hand-crafted durability and supreme walking comfort. Scale up local visibility via localized digital ad spend near competing storefronts.",
-        "beauty": f"Skincare/beauty brands {comp_a} and {comp_b} are winning market share by capitalizing on organic and herbal product bundles. {business_name} should deploy a customized combo offer (e.g. Cleanser + Serum bundle with free shipping) and target skin-conscious shoppers online. Highlight your natural ingredients and premium packaging to stand out.",
-        "electronics": f"Electronics competitors {comp_a} and {comp_b} are driving high conversions with card-specific bank partnerships. {business_name} should introduce limited-time bundle upgrades or free accessory add-ons to boost your premium value proposition.",
-        "generic": f"Rivals {comp_a} and {comp_b} are executing aggressive flash sales. {business_name} can counter-attack by focusing on high-end personalization, zero-delivery fees, and limited-duration coupon codes to create instant purchase urgency."
+def _classify_insight_niche(category: str, products: list) -> dict:
+    """
+    Universal niche classifier for counter-insight generation.
+    Works dynamically for ANY business type or product list.
+    Returns bundle_idea, aov_play, and positioning_angle based on actual product signals.
+    """
+    all_text = (category + " " + " ".join(products or [])).lower()
+
+    NICHE_SIGNALS = [
+        {
+            "signals": ["pizza", "burger", "fries", "wrap", "shawarma", "hotdog", "sandwich", "zinger"],
+            "bundle_idea": "a 'Complete Meal Deal' (signature item + side + beverage at one unified premium price)",
+            "aov_play": "offer a complimentary premium sauce or drink upgrade for orders above a family-size threshold",
+            "angle": "complete meal value vs. competitor single-item discounts",
+        },
+        {
+            "signals": ["karahi", "biryani", "kabab", "tikka", "bbq", "nihari", "naan", "roti", "haleem", "desi"],
+            "bundle_idea": "a premium 'Family Desi Platter' featuring signature items",
+            "aov_play": "add a complimentary dessert or mint lemonade pitcher for dine-in tables above a spend threshold",
+            "angle": "premium home-style cooking experience vs. generic commercial discounts",
+        },
+        {
+            "signals": ["coffee", "tea", "chai", "latte", "cappuccino", "cold brew", "smoothie", "juice", "frappe"],
+            "bundle_idea": "a 'Brew & Bite' bundle (premium beverage + artisanal bakery item during off-peak hours)",
+            "aov_play": "introduce a loyalty stamp card — every 5th premium drink free",
+            "angle": "recurring routine and daily habit building vs. one-time discount traffic",
+        },
+        {
+            "signals": ["ice cream", "gelato", "waffle", "cake", "dessert", "brownie", "chocolate", "sweets", "mithai"],
+            "bundle_idea": "a curated 'Signature Dessert Box' (2-item mix in premium branded packaging)",
+            "aov_play": "add a 'Surprise Sweet' gift upgrade for orders above a premium value threshold",
+            "angle": "impulse-trigger premium gifting experience vs. simple scoop-price cuts",
+        },
+        {
+            "signals": ["lawn", "kurta", "kurti", "dupatta", "shalwar", "kameez", "unstitched", "stitched", "fabric", "linen", "chiffon", "silk"],
+            "bundle_idea": "a 'Complete Style Set' (shirt + trouser + dupatta packaged as a ready-to-wear look)",
+            "aov_play": "unlock a free matching accessory for orders above a premium outfit price point",
+            "angle": "curated outfit convenience vs. competitor clearance-sale price wars",
+        },
+        {
+            "signals": ["shoe", "shoes", "sandal", "sneaker", "boot", "heel", "chappal", "slipper", "loafer"],
+            "bundle_idea": "a 'Step Premium Bundle' (pair + matching bag or care kit at a unified price)",
+            "aov_play": "include a free premium shoe care kit with every pair purchased above a threshold",
+            "angle": "daily comfort, durability, and handcraft quality vs. generic clearance volume sales",
+        },
+        {
+            "signals": ["serum", "moisturizer", "foundation", "lipstick", "cream", "face wash", "toner", "skincare", "makeup", "cosmetic", "beauty", "organic", "perfume"],
+            "bundle_idea": "a '3-Step Glow Regimen Kit' (cleanser + serum + moisturizer in premium packaging)",
+            "aov_play": "add a complimentary travel-sized product for orders exceeding a target cart value",
+            "angle": "complete skincare routine investment vs. competitor single-product serum sales",
+        },
+        {
+            "signals": ["phone", "laptop", "tablet", "earphones", "speaker", "ac", "fan", "fridge", "tv", "electronics", "gadget", "tech"],
+            "bundle_idea": "a 'Tech Care Package' (device + premium accessories + extended in-store warranty)",
+            "aov_play": "offer a free 6-month store warranty on every high-ticket item purchase",
+            "angle": "reliability, trust, and peace of mind vs. competitor bank-partnership discount wars",
+        },
+        {
+            "signals": ["gym", "protein", "supplement", "workout", "yoga", "sport", "activewear", "fitness"],
+            "bundle_idea": "a 'Training Starter Bundle' (protein + shaker + printed workout guide)",
+            "aov_play": "include a free nutrition consultation session for purchases above a premium threshold",
+            "angle": "transformation outcomes and results vs. competitor supplement price-cutting",
+        },
+    ]
+
+    for niche in NICHE_SIGNALS:
+        if any(sig in all_text for sig in niche["signals"]):
+            return niche
+
+    # Universal fallback — works for literally any business type not in the map
+    return {
+        "bundle_idea": "a curated value bundle (your bestselling product + a complementary low-cost add-on)",
+        "aov_play": "a premium free service upgrade or gift for orders above a high-value threshold",
+        "angle": "superior quality, personalization, and local trust vs. competitor generic flash sales",
     }
-    return insights.get(category, insights["generic"])
+
+
+def generate_counter_insight(business_name: str, category: str, comp_a: str, comp_b: str, products: list = None) -> str:
+    """
+    Universal, fully dynamic counter-insight generator.
+    Works for ANY business type — zero hardcoded brand, category, or product references.
+    Strategies are derived purely from the registered products list + category signal matching.
+    """
+    prod_list = products or []
+    prod_str = ", ".join(prod_list) if prod_list else "your core products"
+
+    niche = _classify_insight_niche(category, prod_list)
+    bundle_idea = niche["bundle_idea"]
+    aov_play = niche["aov_play"]
+    angle = niche["angle"]
+
+    return (
+        f"⚡ Strategic Intelligence Report for {business_name}\n\n"
+        f"While {comp_a} and {comp_b} are aggressively executing margin-draining discount campaigns, "
+        f"{business_name} has a clear opportunity to outflank them with a high-margin counter-play.\n\n"
+        f"🎯 RECOMMENDED MOVE — Launch {bundle_idea} built around your core offering: {prod_str}.\n\n"
+        f"📈 AOV BOOSTER — {aov_play.capitalize()}. "
+        f"This drives customers to self-upgrade their order size voluntarily, growing your revenue per transaction "
+        f"without touching your core price points.\n\n"
+        f"💡 POSITIONING ADVANTAGE — Focus all marketing communication on {angle}. "
+        f"Customers who perceive {business_name} as a premium, high-value brand will never switch to a competitor "
+        f"simply because they ran a discount. Build that brand loyalty now, before the next competitor promotion hits."
+    )
 
 
 @app.get("/api/competitors/live")
@@ -1088,7 +1380,8 @@ async def get_live_competitor_insights(business_name: str, business_type: Option
             competitor_a=comp_a,
             competitor_b=comp_b,
             snippets_a=snippets_a,
-            snippets_b=snippets_b
+            snippets_b=snippets_b,
+            products=products
         )
     except Exception as e:
         print(f"[main] Gemini live synthesis failed: {e}")
@@ -1098,7 +1391,7 @@ async def get_live_competitor_insights(business_name: str, business_type: Option
         insights = {
             "competitorA": fallback_a,
             "competitorB": fallback_b,
-            "ai_counter_insight": generate_counter_insight(business_name, resolved_category, comp_a, comp_b)
+            "ai_counter_insight": generate_counter_insight(business_name, resolved_category, comp_a, comp_b, products)
         }
     else:
         # Guarantee real names & brand color from local system even if LLM hallucinated names
