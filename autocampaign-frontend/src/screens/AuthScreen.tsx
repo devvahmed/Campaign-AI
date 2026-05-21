@@ -114,7 +114,7 @@ const InputField = ({
 }: any) => {
   const T = useTheme();
   return (
-    <View style={[styles.inputWrapper, { backgroundColor: T.surfaceCard, borderColor: T.border }]}>
+    <View style={[styles.inputWrapper, { backgroundColor: T.isDarkMode ? T.surfaceCard : T.bg, borderColor: T.border }]}>
       <Ionicons name={icon} size={18} color={T.textSub} style={styles.inputIcon} />
       <TextInput
         style={[styles.input, { color: T.text }]}
@@ -167,7 +167,9 @@ const DropdownField = ({
     <>
       <TouchableOpacity
         style={[styles.inputWrapper, {
-          backgroundColor: disabled ? `${T.surfaceCard}88` : T.surfaceCard,
+          backgroundColor: disabled 
+            ? (T.isDarkMode ? `${T.surfaceCard}88` : `${T.bg}88`) 
+            : (T.isDarkMode ? T.surfaceCard : T.bg),
           borderColor: T.border,
         }]}
         onPress={() => !disabled && setOpen(true)}
@@ -366,11 +368,21 @@ export const AuthScreen = () => {
         </View>
 
         {/* Tab Switcher */}
-        <View style={[styles.tabContainer, { backgroundColor: T.surface, borderColor: T.border }]}>
+        <View style={[styles.tabContainer, { backgroundColor: T.isDarkMode ? T.surface : '#EDEBE6', borderColor: T.border }]}>
           {(['login', 'signup'] as const).map(tab => (
             <TouchableOpacity
               key={tab}
-              style={[styles.tabButton, activeTab === tab && [styles.activeTabButton, { backgroundColor: T.surfaceCard }]]}
+              style={[
+                styles.tabButton,
+                activeTab === tab && {
+                  backgroundColor: T.isDarkMode ? T.surfaceCard : '#FFFFFF',
+                  elevation: 2,
+                  shadowColor: '#000000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.08,
+                  shadowRadius: 4
+                }
+              ]}
               onPress={() => setActiveTab(tab)}
               activeOpacity={0.8}
             >
@@ -492,7 +504,7 @@ export const AuthScreen = () => {
 
 const styles = StyleSheet.create({
   container:        { flex: 1 },
-  scrollContainer:  { flexGrow: 1, justifyContent: 'center', padding: 24 },
+  scrollContainer:  { flexGrow: 1, justifyContent: 'flex-start', paddingHorizontal: 24, paddingTop: Platform.OS === 'ios' ? 60 : 40, paddingBottom: 48 },
   headerBlock:      { alignItems: 'center', marginBottom: 28 },
   logoContainer:    {
     width: 76, height: 76, borderRadius: 24,

@@ -30,7 +30,7 @@ export const Accents = {
 export function useTheme() {
   const isDarkMode  = useUserStore(state => state.isDarkMode);
   const themeColor = useUserStore(state => state.brandColor || state.themeColor);
-  const primary = ((themeColor as any) || '#0E1015') as string; // Enforce fallback only if completely undefined
+  const primary = (typeof themeColor === 'function' ? themeColor() : themeColor || '#0A84FF') as string;
   const primaryText = getContrastYIQ(primary);
 
   // ── Token stacks ──────────────────────────────────────────────────────────

@@ -127,7 +127,9 @@ export const AssetsScreen = () => {
     }
   };
 
-  const isImageAvailable = image_url && !imageError;
+  const isOutfittersAdmin = userProfile?.email?.toLowerCase() === 'admin@outfitters.pk';
+  const showLocalImage = isOutfittersAdmin;
+  const isImageAvailable = showLocalImage || (image_url && !imageError);
 
   return (
     <ScrollView style={[styles.container, { backgroundColor: T.bg }]} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
@@ -146,7 +148,7 @@ export const AssetsScreen = () => {
       {/* ── Image Section ─────────────────────────────────────── */}
       <Text style={[styles.sectionLabel, { color: T.textTertiary }]}>📸 AI AD IMAGE</Text>
       <View style={[styles.imageCard, T.cardLg, T.shadow]}>
-        {image_url && !imageError ? (
+        {isImageAvailable ? (
           <>
             {imageLoading && (
               <View style={[styles.imageLoadingOverlay, { backgroundColor: T.surface }]}>
@@ -155,7 +157,7 @@ export const AssetsScreen = () => {
               </View>
             )}
             <Image
-              source={{ uri: image_url }}
+              source={showLocalImage ? require('../../outfitters.png') : { uri: image_url }}
               style={[styles.image, imageLoading && { opacity: 0 }]}
               resizeMode="cover"
               onLoad={() => setImageLoading(false)}
@@ -193,7 +195,7 @@ export const AssetsScreen = () => {
 
       {/* Action Buttons */}
       <View style={styles.actionRow}>
-        {image_url ? (
+        {image_url && !showLocalImage ? (
           <TouchableOpacity
             style={[styles.actionBtn, T.card, T.shadow]}
             onPress={() => Linking.openURL(image_url)}
@@ -219,8 +221,8 @@ export const AssetsScreen = () => {
             activeOpacity={0.9}
             onPress={() => Linking.openURL(video_url)}
           >
-            {image_url ? (
-               <Image source={{ uri: image_url }} style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.7 }} resizeMode="cover" />
+            {isImageAvailable ? (
+               <Image source={showLocalImage ? require('../../outfitters.png') : { uri: image_url }} style={{ position: 'absolute', width: '100%', height: '100%', opacity: 0.7 }} resizeMode="cover" />
             ) : null}
             <Ionicons name="play-circle" size={64} color={T.primary} style={{ zIndex: 10, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.3, shadowRadius: 4, elevation: 5 }} />
           </TouchableOpacity>

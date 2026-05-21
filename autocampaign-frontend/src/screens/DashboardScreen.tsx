@@ -11,8 +11,8 @@ import { getLiveCompetitors } from '../api/api';
 
 const StatCard = ({ value, label, accent, T }: { value: string; label: string; accent?: string; T: any }) => (
   <View style={[styles.statCard, T.card, T.shadow]}>
-    <Text style={[styles.statValue, { color: accent ?? T.text }]}>{value}</Text>
-    <Text style={[styles.statLabel, { color: T.textSub }]}>{label}</Text>
+    <Text style={[styles.statValue, { color: accent ?? T.text }]} numberOfLines={1} adjustsFontSizeToFit>{value}</Text>
+    <Text style={[styles.statLabel, { color: T.textSub }]} numberOfLines={1} adjustsFontSizeToFit>{label}</Text>
   </View>
 );
 
@@ -201,7 +201,7 @@ export const DashboardScreen = () => {
         {campaigns.length === 0 ? (
           <View style={[styles.competitorCard, T.cardLg, T.shadow]}>
             <View style={styles.chartHeader}>
-              <Text style={[styles.chartTitle, { color: T.text }]}>Competitor Intelligence Hub</Text>
+              <Text style={[styles.chartTitle, { color: T.text, flex: 1, marginRight: 8 }]} numberOfLines={2} adjustsFontSizeToFit>Competitor Intelligence Hub</Text>
               <View style={[styles.liveBadge, { backgroundColor: '#34C75918', borderColor: '#34C75950', borderWidth: 1 }]}>
                 <View style={styles.pulseDot} />
                 <Text style={[styles.liveBadgeText, { color: '#34C759' }]}>LIVE MONITORING</Text>
@@ -221,10 +221,10 @@ export const DashboardScreen = () => {
                   <View style={[styles.compCard, { backgroundColor: T.surface, borderColor: T.border }]}>
                     <View style={styles.compCardHeader}>
                       <Text style={[styles.compName, { color: T.text }]} numberOfLines={1}>{competitors.competitorA.name}</Text>
-                      <View style={[styles.liveIndicator, { backgroundColor: '#34C75918' }]}>
-                        <View style={[styles.pulseDot, { backgroundColor: '#34C759' }]} />
-                        <Text style={styles.liveIndicatorText}>LIVE ADS</Text>
-                      </View>
+                    </View>
+                    <View style={[styles.liveIndicator, { backgroundColor: '#34C75918', alignSelf: 'flex-start', marginBottom: 10 }]}>
+                      <View style={[styles.pulseDot, { backgroundColor: '#34C759' }]} />
+                      <Text style={styles.liveIndicatorText}>LIVE ADS</Text>
                     </View>
                     <Text style={[styles.compSectionTitle, { color: T.primary }]}>Active Deal</Text>
                     <Text style={[styles.compText, { color: T.text }]} numberOfLines={2}>{competitors.competitorA.active_deal}</Text>
@@ -236,10 +236,10 @@ export const DashboardScreen = () => {
                   <View style={[styles.compCard, { backgroundColor: T.surface, borderColor: T.border }]}>
                     <View style={styles.compCardHeader}>
                       <Text style={[styles.compName, { color: T.text }]} numberOfLines={1}>{competitors.competitorB.name}</Text>
-                      <View style={[styles.liveIndicator, { backgroundColor: '#34C75918' }]}>
-                        <View style={[styles.pulseDot, { backgroundColor: '#34C759' }]} />
-                        <Text style={styles.liveIndicatorText}>LIVE ADS</Text>
-                      </View>
+                    </View>
+                    <View style={[styles.liveIndicator, { backgroundColor: '#34C75918', alignSelf: 'flex-start', marginBottom: 10 }]}>
+                      <View style={[styles.pulseDot, { backgroundColor: '#34C759' }]} />
+                      <Text style={styles.liveIndicatorText}>LIVE ADS</Text>
                     </View>
                     <Text style={[styles.compSectionTitle, { color: T.primary }]}>Active Deal</Text>
                     <Text style={[styles.compText, { color: T.text }]} numberOfLines={2}>{competitors.competitorB.active_deal}</Text>
@@ -492,7 +492,7 @@ export const DashboardScreen = () => {
 const styles = StyleSheet.create({
   wrap:       { flex: 1 },
   container:  { flex: 1 },
-  content:    { paddingHorizontal: 24, paddingTop: 24, paddingBottom: 48 },
+  content:    { paddingHorizontal: 24, paddingTop: 24, paddingBottom: 120 },
 
   header:     { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 28 },
   headerLeft: { flex: 1, marginRight: 12 },
@@ -511,9 +511,9 @@ const styles = StyleSheet.create({
   },
 
   statsRow:   { flexDirection: 'row', gap: 12, marginBottom: 24 },
-  statCard:   { flex: 1, padding: 18, alignItems: 'center', borderWidth: 0 },
-  statValue:  { fontSize: 24, fontWeight: '800', marginBottom: 4 },
-  statLabel:  { fontSize: 11, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.5 },
+  statCard:   { flex: 1, paddingVertical: 14, paddingHorizontal: 8, alignItems: 'center', borderWidth: 0 },
+  statValue:  { fontSize: 22, fontWeight: '800', marginBottom: 4 },
+  statLabel:  { fontSize: 10, fontWeight: '700', textTransform: 'uppercase', letterSpacing: 0.4 },
 
   chartCard:  { padding: 24, marginBottom: 28, borderWidth: 0 },
   chartHeader:{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
